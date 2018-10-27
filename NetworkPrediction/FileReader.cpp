@@ -40,16 +40,15 @@ network_data FileReader::read_file(const std::string& file) {
 		if(num_exists[i]) {
 			rtn.index[i] = rtn.num_of_people;
 			rtn.num_of_people++;
-		}
-		else {
+		} else {
 			rtn.index[i] = -1;
 		}
 	}
 	rtn.map = new list[rtn.num_of_people * rtn.num_of_people];
 	rtn.people = new int[rtn.num_of_people];
 	rtn.num_of_people = 0;
-	for(int i=0; i<=max; i++) {
-		if (num_exists[i]) {
+	for(int i = 0; i <= max; i++) {
+		if(num_exists[i]) {
 			rtn.people[rtn.num_of_people] = i;
 			rtn.num_of_people++;
 		}
@@ -78,10 +77,10 @@ network_data FileReader::read_file(const std::string& file) {
 		ifs.peek();
 	}
 	ifs.close();
-	for (int i = 0; i < rtn.num_of_people; i++) {
-		for (int j = 0; j < rtn.num_of_people; j++) {
-			if (rtn[i][j].num>1) {
-				sort(rtn[i][j].data, rtn[i][j].data+rtn[i][j].num);
+	for(int i = 0; i < rtn.num_of_people; i++) {
+		for(int j = 0; j < rtn.num_of_people; j++) {
+			if(rtn[i][j].num > 1) {
+				sort(rtn[i][j].data, rtn[i][j].data + rtn[i][j].num);
 			}
 		}
 	}
@@ -91,22 +90,19 @@ network_data FileReader::read_file(const std::string& file) {
 void FileReader::write_sorted(const std::string& file, const network_data& data) {
 	ofstream ofs;
 	ofs.open(file);
-	if (!ofs) {
+	if(!ofs) {
 		cout << "Failed to read from output file!" << endl;
 		return;
 	}
-	for(int i=0; i<data.num_of_people;i++) {
-		for (int j = 0; j < data.num_of_people; j++) {
+	for(int i = 0; i < data.num_of_people; i++) {
+		for(int j = 0; j < data.num_of_people; j++) {
 			if(data[i][j].num) {
 				ofs << data.people[i] << '\t' << data.people[j] << '\n';
-				for (int k = 0; k < data[i][j].num; k++) {
-					ofs << data[i][j].data[k]<<'\t';
+				for(int k = 0; k < data[i][j].num; k++) {
+					ofs << data[i][j].data[k] << '\t';
 				}
 				ofs << "\n\n";
 			}
 		}
 	}
 }
-
-
-

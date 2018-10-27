@@ -14,6 +14,7 @@ struct network_data {
 	int* index = nullptr;
 	//array of the index the outside world knows
 	int* people = nullptr;
+
 	list* operator[](int rol) const {
 		return (map + (rol * num_of_people));
 	}
