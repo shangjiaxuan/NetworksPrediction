@@ -6,33 +6,41 @@ using namespace std;
 network_data FileReader::read_file(const std::string& file) {
 	std::ifstream ifs;
 	ifs.open(file);
-	if(!ifs) {
+	if (!ifs) {
 		cout << "Failed to read from input file!" << endl;
 		return network_data{};
 	}
+	ifs.seekg(0, ios::end);
+	const uint64_t size = ifs.tellg();
+	std::string str;
+	str.resize(size);
+	ifs.seekg(0);
+	ifs.read(&str[0], size);
+	ifs.close();
+	istringstream iss{ str };
 	int temp = -1;
 	int max = 0;
-	while(ifs.good()) {
-		ifs >> temp;
+	while(iss.good()) {
+		iss >> temp;
 		if(temp > max)max = temp;
-		ifs >> temp;
+		iss >> temp;
 		if(temp > max)max = temp;
-		ifs >> temp;
-		ifs.peek();
+		iss >> temp;
+		iss.peek();
 	}
-	ifs.clear();
-	ifs.seekg(0);
+	iss.clear();
+	iss.seekg(0);
 	bool* num_exists = new bool[max + 1]();
-	while(ifs.good()) {
-		ifs >> temp;
+	while(iss.good()) {
+		iss >> temp;
 		num_exists[temp] = true;
-		ifs >> temp;
+		iss >> temp;
 		num_exists[temp] = true;
-		ifs >> temp;
-		ifs.peek();
+		iss >> temp;
+		iss.peek();
 	}
-	ifs.clear();
-	ifs.seekg(0);
+	iss.clear();
+	iss.seekg(0);
 	network_data rtn;
 	rtn.index = new int[max + 1];
 	rtn.num_of_people = 0;
@@ -53,14 +61,14 @@ network_data FileReader::read_file(const std::string& file) {
 			rtn.num_of_people++;
 		}
 	}
-	while(ifs.good()) {
+	while(iss.good()) {
 		int author, viewer, time;
-		ifs >> author >> viewer >> time;
+		iss >> author >> viewer >> time;
 		rtn[rtn.index[author]][rtn.index[viewer]].num++;
-		ifs.peek();
+		iss.peek();
 	}
-	ifs.clear();
-	ifs.seekg(0);
+	iss.clear();
+	iss.seekg(0);
 	for(int i = 0; i < rtn.num_of_people; i++) {
 		for(int j = 0; j < rtn.num_of_people; j++) {
 			if(rtn[i][j].num) {
@@ -69,14 +77,13 @@ network_data FileReader::read_file(const std::string& file) {
 			}
 		}
 	}
-	while(ifs.good()) {
+	while(iss.good()) {
 		int author, viewer, time;
-		ifs >> author >> viewer >> time;
+		iss >> author >> viewer >> time;
 		rtn[rtn.index[author]][rtn.index[viewer]].data[rtn[rtn.index[author]][rtn.index[viewer]].num] = time;
 		rtn[rtn.index[author]][rtn.index[viewer]].num++;
-		ifs.peek();
+		iss.peek();
 	}
-	ifs.close();
 	for(int i = 0; i < rtn.num_of_people; i++) {
 		for(int j = 0; j < rtn.num_of_people; j++) {
 			if(rtn[i][j].num > 1) {
