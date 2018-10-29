@@ -65,6 +65,10 @@ network_data Algorithms::find_one_subset(int* people, network_data& source, int 
 	return rtn;
 }
 
+bool comp_num_of_people(const network_data& i, const network_data& j) {
+	return i.num_of_people < j.num_of_people;
+}
+
 data_sets Algorithms::separate_sets(network_data& source) {
 	int* found = new int[source.num_of_people]();
 	bool* cur_group = new bool[source.num_of_people];
@@ -91,6 +95,7 @@ data_sets Algorithms::separate_sets(network_data& source) {
 	delete[] found;
 	delete[] cur_group;
 	network_data::destroy(source);
+	std::sort(rtn.pdata, rtn.pdata + rtn.num, comp_num_of_people);
 	return rtn;
 }
 
