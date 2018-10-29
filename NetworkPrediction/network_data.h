@@ -24,6 +24,8 @@ struct network_data {
 	int max_index = 0;
 	int num_of_directional_edge = 0;
 	int num_of_non_directional = 0;
+	int num_of_records = 0;
+	uint64_t sum_of_records = 0;
 	//array of the index within calculation (convert input index to true index)
 	int* index = nullptr;
 	//array of the index the outside world knows

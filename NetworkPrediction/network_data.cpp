@@ -79,6 +79,8 @@ void network_data::destroy(network_data& source) {
 void network_data::copy(const network_data& source, network_data& dest) {
 	dest.num_of_directional_edge = source.num_of_directional_edge;
 	dest.num_of_non_directional = source.num_of_non_directional;
+	dest.num_of_records = source.num_of_records;
+	dest.sum_of_records = source.sum_of_records;
 	dest.max_index = source.max_index;
 	dest.index = new int[dest.max_index];
 	for(int i=0; i<dest.max_index; i++) {
@@ -101,6 +103,8 @@ void network_data::move(network_data& source, network_data& dest) noexcept {
 	dest.num_of_non_directional = source.num_of_non_directional;
 	dest.num_of_people = source.num_of_people;
 	dest.max_index = source.max_index;
+	dest.num_of_records = source.num_of_records;
+	dest.sum_of_records = source.sum_of_records;
 	dest.people = source.people;
 	source.people = nullptr;
 	dest.index = source.index;

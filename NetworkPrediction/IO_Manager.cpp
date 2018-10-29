@@ -2,12 +2,12 @@
 
 using namespace std;
 
-network_data IO_Manager::read_file(const std::string& file) {
+data_sets IO_Manager::read_file(const std::string& file) {
 	std::ifstream ifs;
 	ifs.open(file);
 	if (!ifs) {
 		cout << "Failed to read from input file!" << endl;
-		return network_data{};
+		return data_sets{};
 	}
 	ifs.seekg(0, ios::end);
 	const uint64_t size = ifs.tellg();
@@ -57,6 +57,8 @@ network_data IO_Manager::read_file(const std::string& file) {
 			rtn.num_of_people++;
 		}
 	}
+	delete[] num_exists;
+	num_exists = nullptr;
 	while(iss.good()) {
 		int author, viewer, time;
 		if(iss >> author >> viewer >> time) {
@@ -92,8 +94,7 @@ network_data IO_Manager::read_file(const std::string& file) {
 	}
 	rtn.num_of_non_directional >>= 1;
 	rtn.num_of_non_directional += rtn.num_of_directional_edge;
-	delete[] num_exists;
-	return rtn;
+	return Algorithms::separate_sets(rtn);
 }
 
 void IO_Manager::write_sorted(const std::string& file, const network_data& data) {

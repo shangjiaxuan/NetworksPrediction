@@ -57,12 +57,18 @@ network_data Algorithms::find_one_subset(int* people, network_data& source, int 
 				sort(rtn[i][j].data, rtn[i][j].data + rtn[i][j].num);
 				rtn.num_of_directional_edge++;
 				if (rtn[j][i].num) rtn.num_of_non_directional--;
+				rtn.num_of_records += rtn[i][j].num;
+				rtn.sum_of_records += rtn[i][j].sum;
 			}
 		}
 	}
 	rtn.num_of_non_directional >>= 1;
 	rtn.num_of_non_directional += rtn.num_of_directional_edge;
 	return rtn;
+}
+
+bool comp_num_of_people(const network_data& i, const network_data& j) {
+	return i.num_of_people < j.num_of_people;
 }
 
 data_sets Algorithms::separate_sets(network_data& source) {
@@ -91,6 +97,7 @@ data_sets Algorithms::separate_sets(network_data& source) {
 	delete[] found;
 	delete[] cur_group;
 	network_data::destroy(source);
+	std::sort(rtn.pdata, rtn.pdata + rtn.num, comp_num_of_people);
 	return rtn;
 }
 
