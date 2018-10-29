@@ -1,5 +1,4 @@
 #include "IO_Manager.h"
-#include <algorithm>
 
 using namespace std;
 
