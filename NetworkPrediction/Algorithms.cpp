@@ -57,6 +57,8 @@ network_data Algorithms::find_one_subset(int* people, network_data& source, int 
 				sort(rtn[i][j].data, rtn[i][j].data + rtn[i][j].num);
 				rtn.num_of_directional_edge++;
 				if (rtn[j][i].num) rtn.num_of_non_directional--;
+				rtn.num_of_records += rtn[i][j].num;
+				rtn.sum_of_records += rtn[i][j].sum;
 			}
 		}
 	}
