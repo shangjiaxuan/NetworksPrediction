@@ -18,26 +18,23 @@ network_data IO_Manager::read_file(const std::string& file) {
 	ifs.close();
 	network_data rtn;
 	istringstream iss{ str };
-	int temp = -1;
 	rtn.max_index = 0;
 	while(iss.good()) {
-		iss >> temp;
-		if(temp > rtn.max_index) rtn.max_index = temp;
-		iss >> temp;
-		if(temp > rtn.max_index) rtn.max_index = temp;
-		iss >> temp;
-		iss.peek();
+		int author=-1, viewer=-1, time=-1;
+		if(iss >> author >> viewer >> time) {
+			if (author > rtn.max_index) rtn.max_index = author;
+			if (viewer > rtn.max_index) rtn.max_index = viewer;
+		}
 	}
 	iss.clear();
 	iss.seekg(0);
 	bool* num_exists = new bool[rtn.max_index + 1]();
 	while(iss.good()) {
-		iss >> temp;
-		num_exists[temp] = true;
-		iss >> temp;
-		num_exists[temp] = true;
-		iss >> temp;
-		iss.peek();
+		int author = -1, viewer = -1, time = -1;
+		if(iss >> author >> viewer >> time) {
+			num_exists[author] = true;
+			num_exists[viewer] = true;
+		}
 	}
 	iss.clear();
 	iss.seekg(0);
@@ -62,10 +59,10 @@ network_data IO_Manager::read_file(const std::string& file) {
 	}
 	while(iss.good()) {
 		int author, viewer, time;
-		iss >> author >> viewer >> time;
-		rtn[rtn.index[author]][rtn.index[viewer]].num++;
-		rtn[rtn.index[author]][rtn.index[viewer]].sum += time;
-		iss.peek();
+		if(iss >> author >> viewer >> time) {
+			rtn[rtn.index[author]][rtn.index[viewer]].num++;
+			rtn[rtn.index[author]][rtn.index[viewer]].sum += time;
+		}
 	}
 	iss.clear();
 	iss.seekg(0);
@@ -79,10 +76,10 @@ network_data IO_Manager::read_file(const std::string& file) {
 	}
 	while(iss.good()) {
 		int author, viewer, time;
-		iss >> author >> viewer >> time;
-		rtn[rtn.index[author]][rtn.index[viewer]].data[rtn[rtn.index[author]][rtn.index[viewer]].num] = time;
-		rtn[rtn.index[author]][rtn.index[viewer]].num++;
-		iss.peek();
+		if(iss >> author >> viewer >> time) {
+			rtn[rtn.index[author]][rtn.index[viewer]].data[rtn[rtn.index[author]][rtn.index[viewer]].num] = time;
+			rtn[rtn.index[author]][rtn.index[viewer]].num++;
+		}
 	}
 	for(int i = 0; i < rtn.num_of_people; i++) {
 		for(int j = 0; j < rtn.num_of_people; j++) {
@@ -95,6 +92,7 @@ network_data IO_Manager::read_file(const std::string& file) {
 	}
 	rtn.num_of_non_directional >>= 1;
 	rtn.num_of_non_directional += rtn.num_of_directional_edge;
+	delete[] num_exists;
 	return rtn;
 }
 
