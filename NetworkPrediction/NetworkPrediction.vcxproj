@@ -115,12 +115,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="FileReader.cpp" />
+    <ClCompile Include="Algorithms.cpp" />
+    <ClCompile Include="IO_Manager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="network_data.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="FileReader.h" />
+    <ClInclude Include="Algorithms.h" />
+    <ClInclude Include="IO_Manager.h" />
     <ClInclude Include="Header.h" />
+    <ClInclude Include="network_data.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

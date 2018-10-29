@@ -1,9 +1,8 @@
-#include "FileReader.h"
-#include <algorithm>
+#include "IO_Manager.h"
 
 using namespace std;
 
-network_data FileReader::read_file(const std::string& file) {
+network_data IO_Manager::read_file(const std::string& file) {
 	std::ifstream ifs;
 	ifs.open(file);
 	if (!ifs) {
@@ -17,20 +16,21 @@ network_data FileReader::read_file(const std::string& file) {
 	ifs.seekg(0);
 	ifs.read(&str[0], size);
 	ifs.close();
+	network_data rtn;
 	istringstream iss{ str };
 	int temp = -1;
-	int max = 0;
+	rtn.max_index = 0;
 	while(iss.good()) {
 		iss >> temp;
-		if(temp > max)max = temp;
+		if(temp > rtn.max_index) rtn.max_index = temp;
 		iss >> temp;
-		if(temp > max)max = temp;
+		if(temp > rtn.max_index) rtn.max_index = temp;
 		iss >> temp;
 		iss.peek();
 	}
 	iss.clear();
 	iss.seekg(0);
-	bool* num_exists = new bool[max + 1]();
+	bool* num_exists = new bool[rtn.max_index + 1]();
 	while(iss.good()) {
 		iss >> temp;
 		num_exists[temp] = true;
@@ -41,10 +41,9 @@ network_data FileReader::read_file(const std::string& file) {
 	}
 	iss.clear();
 	iss.seekg(0);
-	network_data rtn;
-	rtn.index = new int[max + 1];
+	rtn.index = new int[rtn.max_index + 1];
 	rtn.num_of_people = 0;
-	for(int i = 0; i <= max; i++) {
+	for(int i = 0; i <= rtn.max_index; i++) {
 		if(num_exists[i]) {
 			rtn.index[i] = rtn.num_of_people;
 			rtn.num_of_people++;
@@ -55,7 +54,7 @@ network_data FileReader::read_file(const std::string& file) {
 	rtn.map = new list[rtn.num_of_people * rtn.num_of_people];
 	rtn.people = new int[rtn.num_of_people];
 	rtn.num_of_people = 0;
-	for(int i = 0; i <= max; i++) {
+	for(int i = 0; i <= rtn.max_index; i++) {
 		if(num_exists[i]) {
 			rtn.people[rtn.num_of_people] = i;
 			rtn.num_of_people++;
@@ -65,6 +64,7 @@ network_data FileReader::read_file(const std::string& file) {
 		int author, viewer, time;
 		iss >> author >> viewer >> time;
 		rtn[rtn.index[author]][rtn.index[viewer]].num++;
+		rtn[rtn.index[author]][rtn.index[viewer]].sum += time;
 		iss.peek();
 	}
 	iss.clear();
@@ -86,15 +86,19 @@ network_data FileReader::read_file(const std::string& file) {
 	}
 	for(int i = 0; i < rtn.num_of_people; i++) {
 		for(int j = 0; j < rtn.num_of_people; j++) {
-			if(rtn[i][j].num > 1) {
+			if(rtn[i][j].num) {
 				sort(rtn[i][j].data, rtn[i][j].data + rtn[i][j].num);
+				rtn.num_of_directional_edge++;
+				if (rtn[j][i].num) rtn.num_of_non_directional--;
 			}
 		}
 	}
+	rtn.num_of_non_directional >>= 1;
+	rtn.num_of_non_directional += rtn.num_of_directional_edge;
 	return rtn;
 }
 
-void FileReader::write_sorted(const std::string& file, const network_data& data) {
+void IO_Manager::write_sorted(const std::string& file, const network_data& data) {
 	ofstream ofs;
 	ofs.open(file);
 	if(!ofs) {
@@ -105,6 +109,7 @@ void FileReader::write_sorted(const std::string& file, const network_data& data)
 		for(int j = 0; j < data.num_of_people; j++) {
 			if(data[i][j].num) {
 				ofs << data.people[i] << '\t' << data.people[j] << '\n';
+				ofs << data[i][j].num << '\t' << data[i][j].sum << '\n';
 				for(int k = 0; k < data[i][j].num; k++) {
 					ofs << data[i][j].data[k] << '\t';
 				}
