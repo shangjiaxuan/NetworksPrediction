@@ -3,9 +3,9 @@
 #include "Header.h"
 
 struct list {
-	int num = 0;
+	unsigned num = 0;
 	uint64_t sum = 0;
-	int* data = nullptr;
+	unsigned* data = nullptr;
 
 	list() = default;
 	~list();
@@ -20,14 +20,14 @@ struct list {
 
 struct network_data {
 	list* map = nullptr;
-	int num_of_people = 0;
+	unsigned num_of_people = 0;
 	int max_index = 0;
-	int num_of_directional_edge = 0;
-	int num_of_non_directional = 0;
-	int num_of_records = 0;
+	unsigned num_of_directional_edge = 0;
+	unsigned num_of_non_directional = 0;
+	unsigned num_of_records = 0;
 	uint64_t sum_of_records = 0;
 	//array of the index within calculation (convert input index to true index)
-	int* index = nullptr;
+	unsigned* index = nullptr;
 	//array of the index the outside world knows
 	int* people = nullptr;
 

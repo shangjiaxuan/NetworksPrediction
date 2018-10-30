@@ -24,8 +24,14 @@
     <ClCompile Include="IO_Manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Find_subset.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Algorithms.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Thread_Manager.ipp">
+      <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -39,6 +45,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Algorithms.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Thread_Manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Relation_array.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
