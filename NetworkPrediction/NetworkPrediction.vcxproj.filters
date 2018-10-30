@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Framework">
+      <UniqueIdentifier>{acf8c4ec-d4bb-4a20-8f21-affd26fc05ae}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -30,27 +33,24 @@
     <ClCompile Include="Algorithms.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Thread_Manager.ipp">
-      <Filter>Header Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Header.h">
+    <ClInclude Include="Algorithms.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="network_data.h">
+    <ClInclude Include="Header.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IO_Manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Algorithms.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Thread_Manager.h">
+    <ClInclude Include="network_data.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Relation_array.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Thread_Manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
