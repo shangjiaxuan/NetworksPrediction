@@ -94,16 +94,12 @@ data_sets IO_Manager::read_file(const std::string& file) {
 	}
 	rtn.num_of_non_directional >>= 1;
 	rtn.num_of_non_directional += rtn.num_of_directional_edge;
-	return Algorithms::separate_sets(rtn);
+	const data_sets& val = Algorithms::separate_sets(rtn);
+	network_data::destroy(rtn);
+	return val;
 }
 
-void IO_Manager::write_sorted(const std::string& file, const network_data& data) {
-	ofstream ofs;
-	ofs.open(file);
-	if(!ofs) {
-		cout << "Failed to write to output file!" << endl;
-		return;
-	}
+void IO_Manager::write_sorted(ostream& ofs, const network_data& data) {
 	for(unsigned i = 0; i < data.num_of_people; i++) {
 		for(unsigned j = 0; j < data.num_of_people; j++) {
 			if(data[i][j].num) {

@@ -8,17 +8,13 @@ struct item {
 	list contact_list;
 };
 
-struct data_sets {
-	network_data* pdata = nullptr;
+template<typename node>
+struct counted_array {
+	node* data = nullptr;
 	unsigned num = 0;
 };
 
-struct sorted_items {
-	unsigned num = 0;
-	item* data = nullptr;
-};
+typedef counted_array<network_data> data_sets;
+typedef counted_array<item> sorted_items;
+typedef counted_array<sorted_items> set_of_sorted;
 
-struct set_of_sorted {
-	sorted_items* data = nullptr;
-	unsigned num = 0;
-};

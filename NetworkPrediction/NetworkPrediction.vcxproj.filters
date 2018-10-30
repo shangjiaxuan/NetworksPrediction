@@ -24,11 +24,14 @@
     <ClCompile Include="IO_Manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Find_subset.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Algorithms.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Thread_Manager.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Thread_Manager.ipp">
+      <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

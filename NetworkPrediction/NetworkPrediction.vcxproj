@@ -120,10 +120,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Algorithms.cpp" />
+    <ClCompile Include="Find_subset.cpp" />
     <ClCompile Include="IO_Manager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="network_data.cpp" />
-    <ClCompile Include="Thread_Manager.cpp" />
+    <ClCompile Include="Thread_Manager.ipp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Algorithms.h" />
