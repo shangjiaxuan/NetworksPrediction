@@ -45,4 +45,3 @@ struct network_data {
 	static void copy(const network_data& source, network_data& dest);
 	static void destroy(network_data& source);
 };
-

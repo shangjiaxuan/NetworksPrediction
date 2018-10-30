@@ -32,7 +32,7 @@ void list::copy(const list& source, list& dest) {
 	dest.num = source.num;
 	if(dest.num) {
 		dest.data = new int[dest.num];
-		for (int i = 0; i < dest.num; i++) {
+		for(int i = 0; i < dest.num; i++) {
 			dest.data[i] = source.data[i];
 		}
 	}
@@ -83,17 +83,17 @@ void network_data::copy(const network_data& source, network_data& dest) {
 	dest.sum_of_records = source.sum_of_records;
 	dest.max_index = source.max_index;
 	dest.index = new int[dest.max_index];
-	for(int i=0; i<dest.max_index; i++) {
+	for(int i = 0; i < dest.max_index; i++) {
 		dest.index[i] = source.index[i];
 	}
 	dest.num_of_people = source.num_of_people;
 	dest.people = new int[dest.num_of_people];
-	for (int i = 0; i < dest.num_of_people; i++) {
+	for(int i = 0; i < dest.num_of_people; i++) {
 		dest.people[i] = source.people[i];
 	}
-	const int map_size = dest.num_of_people*dest.num_of_people;
+	const int map_size = dest.num_of_people * dest.num_of_people;
 	dest.map = new list[map_size];
-	for(int i=0; i<map_size; i++) {
+	for(int i = 0; i < map_size; i++) {
 		dest.map[i] = source.map[i];
 	}
 }
@@ -112,7 +112,3 @@ void network_data::move(network_data& source, network_data& dest) noexcept {
 	dest.map = source.map;
 	source.map = nullptr;
 }
-
-
-
-

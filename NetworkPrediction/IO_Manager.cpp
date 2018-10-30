@@ -5,7 +5,7 @@ using namespace std;
 data_sets IO_Manager::read_file(const std::string& file) {
 	std::ifstream ifs;
 	ifs.open(file);
-	if (!ifs) {
+	if(!ifs) {
 		cout << "Failed to read from input file!" << endl;
 		return data_sets{};
 	}
@@ -17,13 +17,13 @@ data_sets IO_Manager::read_file(const std::string& file) {
 	ifs.read(&str[0], size);
 	ifs.close();
 	network_data rtn;
-	istringstream iss{ str };
+	istringstream iss{str};
 	rtn.max_index = 0;
 	while(iss.good()) {
-		int author=-1, viewer=-1, time=-1;
+		int author = -1, viewer = -1, time = -1;
 		if(iss >> author >> viewer >> time) {
-			if (author > rtn.max_index) rtn.max_index = author;
-			if (viewer > rtn.max_index) rtn.max_index = viewer;
+			if(author > rtn.max_index) rtn.max_index = author;
+			if(viewer > rtn.max_index) rtn.max_index = viewer;
 		}
 	}
 	iss.clear();
@@ -88,7 +88,7 @@ data_sets IO_Manager::read_file(const std::string& file) {
 			if(rtn[i][j].num) {
 				sort(rtn[i][j].data, rtn[i][j].data + rtn[i][j].num);
 				rtn.num_of_directional_edge++;
-				if (rtn[j][i].num) rtn.num_of_non_directional--;
+				if(rtn[j][i].num) rtn.num_of_non_directional--;
 			}
 		}
 	}
@@ -101,7 +101,7 @@ void IO_Manager::write_sorted(const std::string& file, const network_data& data)
 	ofstream ofs;
 	ofs.open(file);
 	if(!ofs) {
-		cout << "Failed to read from output file!" << endl;
+		cout << "Failed to write to output file!" << endl;
 		return;
 	}
 	for(int i = 0; i < data.num_of_people; i++) {

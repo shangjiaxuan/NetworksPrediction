@@ -21,4 +21,3 @@ private:
 	static network_data find_one_subset(int* people, network_data& source, int group);
 	static void find_one_subset_loop(bool* cur_group, int* found, network_data& source, int cur, int start, int group);
 };
-
