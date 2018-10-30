@@ -38,7 +38,7 @@ data_sets IO_Manager::read_file(const std::string& file) {
 	}
 	iss.clear();
 	iss.seekg(0);
-	rtn.index = new int[rtn.max_index + 1];
+	rtn.index = new unsigned[rtn.max_index + 1];
 	rtn.num_of_people = 0;
 	for(int i = 0; i <= rtn.max_index; i++) {
 		if(num_exists[i]) {
@@ -68,10 +68,10 @@ data_sets IO_Manager::read_file(const std::string& file) {
 	}
 	iss.clear();
 	iss.seekg(0);
-	for(int i = 0; i < rtn.num_of_people; i++) {
-		for(int j = 0; j < rtn.num_of_people; j++) {
+	for(unsigned i = 0; i < rtn.num_of_people; i++) {
+		for(unsigned j = 0; j < rtn.num_of_people; j++) {
 			if(rtn[i][j].num) {
-				rtn[i][j].data = new int[rtn[i][j].num];
+				rtn[i][j].data = new unsigned[rtn[i][j].num];
 				rtn[i][j].num = 0;
 			}
 		}
@@ -83,8 +83,8 @@ data_sets IO_Manager::read_file(const std::string& file) {
 			rtn[rtn.index[author]][rtn.index[viewer]].num++;
 		}
 	}
-	for(int i = 0; i < rtn.num_of_people; i++) {
-		for(int j = 0; j < rtn.num_of_people; j++) {
+	for(unsigned i = 0; i < rtn.num_of_people; i++) {
+		for(unsigned j = 0; j < rtn.num_of_people; j++) {
 			if(rtn[i][j].num) {
 				sort(rtn[i][j].data, rtn[i][j].data + rtn[i][j].num);
 				rtn.num_of_directional_edge++;
@@ -104,12 +104,12 @@ void IO_Manager::write_sorted(const std::string& file, const network_data& data)
 		cout << "Failed to write to output file!" << endl;
 		return;
 	}
-	for(int i = 0; i < data.num_of_people; i++) {
-		for(int j = 0; j < data.num_of_people; j++) {
+	for(unsigned i = 0; i < data.num_of_people; i++) {
+		for(unsigned j = 0; j < data.num_of_people; j++) {
 			if(data[i][j].num) {
 				ofs << data.people[i] << '\t' << data.people[j] << '\n';
 				ofs << data[i][j].num << '\t' << data[i][j].sum << '\n';
-				for(int k = 0; k < data[i][j].num; k++) {
+				for(unsigned k = 0; k < data[i][j].num; k++) {
 					ofs << data[i][j].data[k] << '\t';
 				}
 				ofs << "\n\n";

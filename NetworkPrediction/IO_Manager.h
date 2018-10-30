@@ -1,8 +1,5 @@
 #pragma once
 
-#include "Header.h"
-
-#include "network_data.h"
 #include "Algorithms.h"
 
 class IO_Manager {

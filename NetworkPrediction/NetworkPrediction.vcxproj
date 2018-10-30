@@ -123,12 +123,15 @@
     <ClCompile Include="IO_Manager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="network_data.cpp" />
+    <ClCompile Include="Thread_Manager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Algorithms.h" />
     <ClInclude Include="IO_Manager.h" />
     <ClInclude Include="Header.h" />
     <ClInclude Include="network_data.h" />
+    <ClInclude Include="Relation_array.h" />
+    <ClInclude Include="Thread_Manager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

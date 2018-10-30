@@ -1,5 +1,4 @@
 #include "Algorithms.h"
-#include <immintrin.h>
 
 using namespace std;
 
@@ -9,7 +8,7 @@ void Algorithms::find_one_subset_loop(bool* cur_group,
 									int cur,
 									int start,
 									int group) {
-	for(int i = start; i < source.num_of_people; i++) {
+	for(unsigned i = start; i < source.num_of_people; i++) {
 		if(!found[i]) {
 			if(source[cur][i].num || source[i][cur].num) {
 				found[i] = group;
@@ -23,17 +22,17 @@ void Algorithms::find_one_subset_loop(bool* cur_group,
 network_data Algorithms::find_one_subset(int* people, network_data& source, int group) {
 	network_data rtn;
 	rtn.max_index = 0;
-	for(int i = 0; i < source.num_of_people; i++) {
+	for(unsigned i = 0; i < source.num_of_people; i++) {
 		if(people[i] == group) {
 			rtn.num_of_people++;
 			if(source.people[i] > rtn.max_index) rtn.max_index = source.people[i];
 		}
 	}
-	rtn.index = new int[rtn.max_index + 1];
+	rtn.index = new unsigned[rtn.max_index + 1];
 	rtn.people = new int[rtn.num_of_people];
 	rtn.map = new list[rtn.num_of_people * rtn.num_of_people]();
 	int cur_index = 0;
-	for(int i = 0; i < source.num_of_people && source.people[i] <= rtn.max_index; i++) {
+	for(unsigned i = 0; i < source.num_of_people && source.people[i] <= rtn.max_index; i++) {
 		if(people[i] == group) {
 			rtn.people[cur_index] = source.people[i];
 			rtn.index[source.people[i]] = cur_index;
@@ -43,10 +42,10 @@ network_data Algorithms::find_one_subset(int* people, network_data& source, int 
 		}
 	}
 	int i_rtn = 0;
-	for(int i = 0; i < source.num_of_people; i++) {
+	for(unsigned i = 0; i < source.num_of_people; i++) {
 		if(people[i] == group) {
 			int j_rtn = 0;
-			for(int j = 0; j < source.num_of_people; j++) {
+			for(unsigned j = 0; j < source.num_of_people; j++) {
 				if(people[j] == group) {
 					rtn[i_rtn][j_rtn] = source[i][j];
 					j_rtn++;
@@ -55,8 +54,8 @@ network_data Algorithms::find_one_subset(int* people, network_data& source, int 
 			i_rtn++;
 		}
 	}
-	for(int i = 0; i < rtn.num_of_people; i++) {
-		for(int j = 0; j < rtn.num_of_people; j++) {
+	for(unsigned i = 0; i < rtn.num_of_people; i++) {
+		for(unsigned j = 0; j < rtn.num_of_people; j++) {
 			if(rtn[i][j].num) {
 				sort(rtn[i][j].data, rtn[i][j].data + rtn[i][j].num);
 				rtn.num_of_directional_edge++;
@@ -75,15 +74,18 @@ bool comp_num_of_people(const network_data& i, const network_data& j) {
 	return i.num_of_people < j.num_of_people;
 }
 
+bool comp_rel_num(const network_data& i, const network_data& j) {
+	return i.num_of_directional_edge < j.num_of_directional_edge;
+}
+
 data_sets Algorithms::separate_sets(network_data& source) {
 	int* found = new int[source.num_of_people]();
 	bool* cur_group = new bool[source.num_of_people];
-	int top = -1;
 	int group_index = 0;
-	for(int i = 0; i < source.num_of_people; i++) {
+	for(unsigned i = 0; i < source.num_of_people; i++) {
 		if(!found[i]) {
 			group_index++;
-			for(int k = 0; k < source.num_of_people; k++) {
+			for(unsigned k = 0; k < source.num_of_people; k++) {
 				cur_group[k] = false;
 			}
 			cur_group[i] = true;
@@ -101,6 +103,6 @@ data_sets Algorithms::separate_sets(network_data& source) {
 	delete[] found;
 	delete[] cur_group;
 	network_data::destroy(source);
-	std::sort(rtn.pdata, rtn.pdata + rtn.num, comp_num_of_people);
+	std::sort(rtn.pdata, rtn.pdata + rtn.num, comp_rel_num);
 	return rtn;
 }
