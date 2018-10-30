@@ -4,7 +4,7 @@ using namespace std;
 
 sorted_items launch_function(bool* lock, sort_rel_func function, network_data* data) {
 	*lock = true;
-	const sorted_items& rtn = function(data);
+	const sorted_items& rtn = function(*data);
 	*lock = false;
 	return rtn;
 }
@@ -20,7 +20,7 @@ set_of_sorted Thread_Manager::work(const data_sets& source, sort_rel_func functi
 	for(unsigned i = 0; i < source.num;) {
 		for(unsigned j = 1; j < num_of_core; j++) {
 			if(!locks[tasks[j]]) {
-				buffer[i] = std::async(std::launch::async, launch_function, &locks[i], function, &source.pdata[i]);
+				buffer[i] = async(std::launch::async, launch_function, &locks[i], function, &source.pdata[i]);
 				tasks[j] = i;
 				i++;
 			}

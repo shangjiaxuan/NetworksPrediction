@@ -2,7 +2,7 @@
 
 #include "Relation_array.h"
 
-typedef sorted_items (*sort_rel_func)(const network_data*);
+typedef sorted_items (*sort_rel_func)(const network_data&);
 
 class Thread_Manager {
 public:
