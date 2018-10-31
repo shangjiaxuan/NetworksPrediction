@@ -28,6 +28,10 @@ void list::destroy(list& source) {
 }
 
 void list::copy(const list& source, list& dest) {
+	if (&dest == &source) {
+		return;
+	}
+	destroy(dest);
 	dest.sum = source.sum;
 	dest.num = source.num;
 	if(dest.num) {
@@ -39,6 +43,10 @@ void list::copy(const list& source, list& dest) {
 }
 
 void list::move(list& source, list& dest) noexcept {
+	if(&dest==&source) {
+		return;
+	}
+	destroy(dest);
 	dest.sum = source.sum;
 	dest.num = source.num;
 	dest.data = source.data;
@@ -77,6 +85,10 @@ void network_data::destroy(network_data& source) {
 }
 
 void network_data::copy(const network_data& source, network_data& dest) {
+	if (&source == &dest) {
+		return;
+	}
+	destroy(dest);
 	dest.num_of_directional_edge = source.num_of_directional_edge;
 	dest.num_of_non_directional = source.num_of_non_directional;
 	dest.num_of_records = source.num_of_records;
@@ -99,6 +111,10 @@ void network_data::copy(const network_data& source, network_data& dest) {
 }
 
 void network_data::move(network_data& source, network_data& dest) noexcept {
+	if(&source==&dest) {
+		return;
+	}
+	destroy(dest);
 	dest.num_of_directional_edge = source.num_of_directional_edge;
 	dest.num_of_non_directional = source.num_of_non_directional;
 	dest.num_of_people = source.num_of_people;

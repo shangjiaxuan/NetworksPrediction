@@ -5,7 +5,7 @@
 template<typename input, typename output>
 class Thread_Manager {
 public:
-	static counted_array<output> work(const counted_array<input>& source, output(*function)(const input&));;
+	static counted_array<output> work(const counted_array<input>& source, output(*function)(const input&));
 private:
 	static output launch_function(bool* lock, output(*function)(const input&), input* data);
 };
@@ -27,16 +27,16 @@ Thread_Manager<input, output>::work(const counted_array<input>& source, output(*
 	rtn.data = new output[source.num];
 	std::future<output>* buffer = new std::future<output>[source.num];
 	unsigned* tasks = new unsigned[num_of_threads];
-	bool* locks = new bool[source.num]();
+	bool* locks = new bool[num_of_threads]();
 	for (unsigned i = 0; i < num_of_threads; i++) {
 		buffer[i] = std::async(std::launch::async, launch_function, &locks[i], function, &source.data[i]);
 		tasks[i] = i;
 	}
 	for (unsigned i = num_of_threads; i < source.num;) {
 		for (unsigned j = 0; j < num_of_threads && i < source.num; j++) {
-			if (!locks[tasks[j]]) {
+			if (!locks[j]) {
 				rtn.data[tasks[j]] = buffer[tasks[j]].get();
-				buffer[i] = std::async(std::launch::async, launch_function, &locks[i], function, &source.data[i]);
+				buffer[i] = std::async(std::launch::async, launch_function, &locks[j], function, &source.data[i]);
 				tasks[j] = i;
 				i++;
 			}

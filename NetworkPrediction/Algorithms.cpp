@@ -1,10 +1,17 @@
 #include "Algorithms.h"
-#include "../../../../../../Program Files (x86)/Windows Kits/10/Include/10.0.17134.0/ucrt/stdlib.h"
 
 using namespace std;
 
 sorted_items Algorithms::func1(const network_data& data) {
 	return sorted_items();
+}
+
+bool compare_cl_coeff(const clustering& val1, const clustering& val2) {
+	if (isnan(val1.cl_coeff) && isnan(val2.cl_coeff)) return val1.person < val2.person;
+	if (isnan(val1.cl_coeff)) return false;
+	if (isnan(val2.cl_coeff)) return true;
+	if (val1.cl_coeff == val2.cl_coeff) return val1.person < val2.person;
+	return(val1.cl_coeff < val2.cl_coeff);
 }
 
 counted_array<clustering> Algorithms::find_clustering_coeff(const network_data & data) {
@@ -27,6 +34,7 @@ counted_array<clustering> Algorithms::find_clustering_coeff(const network_data &
 		rtn.data[i].cl_coeff = double(2 * neighbor_edge_count) / (neighbor_count*(neighbor_count - 1));
 		rtn.data[i].person = data.people[i];
 	}
+	sort(rtn.data, rtn.data + rtn.num, compare_cl_coeff);
 	return rtn;
 }
 
