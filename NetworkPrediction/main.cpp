@@ -75,6 +75,22 @@ void write_all_clustering_data(const counted_array<counted_array<clustering>>& s
 	delete[] val.data;
 }
 
+int test_func(const network_data& source) {
+	ostringstream oss;
+	oss << source.num_of_directional_edge;
+	ofstream ofs;
+	ofs.open(oss.str() + ".clust");
+	if (!ofs) {
+		cout << "Cannot open file for output!" << endl;
+		return 1;
+	}
+	else {
+		IO_Manager::write_sorted(ofs, source);
+	}
+	ofs.close();
+	return 0;
+}
+
 int main() {
 	cout << std::setprecision(9);
 	cout << "Reading file...\n" << endl;
@@ -102,6 +118,16 @@ int main() {
 	write_network_data(data);
 	dur = std::chrono::steady_clock::now() - start;
 	cout << "Time used multi-threaded writing network data:\n" << dur.count() << " seconds.\n" << endl;
+	/*
+	std::vector<network_data> test;
+	for (int i = 0; i < data.num; i++) {
+		test.emplace_back(data.data[i]);
+	}
+	start = std::chrono::steady_clock::now();
+	std::vector<int> temp = Thread_Manager<network_data, int>::work_vector(test, test_func);
+	dur = std::chrono::steady_clock::now() - start;
+	cout << "Time new mt write:\n" << dur.count() << " seconds.\n" << endl;
+	*/
 	start = std::chrono::steady_clock::now();
 	counted_array<counted_array<clustering>> val=Thread_Manager<network_data, counted_array<clustering>>::work(data, Algorithms::find_clustering_coeff);
 	dur = std::chrono::steady_clock::now() - start;

@@ -1,3 +1,14 @@
+//////////////////////////////////////////////
+//要添加的算法：
+//一个朋友概率贡献，两个节点1-（1-p）^n
+//1. 人数按聚集系数的分布
+//2. 有一定共同朋友数的节点对数&其中是朋友的数量&概率
+//3. 2.中“共同朋友”=“至少一方访问另一方两次非0的人”
+//4. 2.中“共同朋友”=“两个人互相访问”
+//5. 人数按入度，出度的分布
+//
+
+
 #include "Algorithms.h"
 
 using namespace std;
@@ -37,4 +48,3 @@ counted_array<clustering> Algorithms::find_clustering_coeff(const network_data &
 	sort(rtn.data, rtn.data + rtn.num, compare_cl_coeff);
 	return rtn;
 }
-
