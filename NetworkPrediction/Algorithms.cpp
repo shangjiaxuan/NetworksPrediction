@@ -13,8 +13,8 @@
 
 using namespace std;
 
-sorted_items Algorithms::func1(const network_data& data) {
-	return sorted_items();
+vector<item> Algorithms::func1(const network_data& data) {
+	return vector<item>();
 }
 
 bool compare_cl_coeff(const clustering& val1, const clustering& val2) {
@@ -25,10 +25,8 @@ bool compare_cl_coeff(const clustering& val1, const clustering& val2) {
 	return(val1.cl_coeff < val2.cl_coeff);
 }
 
-counted_array<clustering> Algorithms::find_clustering_coeff(const network_data & data) {
-	counted_array<clustering> rtn;
-	rtn.num = data.num_of_people;
-	rtn.data = new clustering[data.num_of_people];
+vector<clustering> Algorithms::find_clustering_coeff(network_data & data) {
+	vector<clustering> rtn(data.num_of_people);
 	for(unsigned i=0; i<data.num_of_people; i++) {
 		int neighbor_count = 0;
 		int neighbor_edge_count = 0;
@@ -42,9 +40,9 @@ counted_array<clustering> Algorithms::find_clustering_coeff(const network_data &
 				}
 			}
 		}
-		rtn.data[i].cl_coeff = double(2 * neighbor_edge_count) / (neighbor_count*(neighbor_count - 1));
-		rtn.data[i].person = data.people[i];
+		rtn[i].cl_coeff = double(2 * neighbor_edge_count) / (neighbor_count*(neighbor_count - 1));
+		rtn[i].person = data.people[i];
 	}
-	sort(rtn.data, rtn.data + rtn.num, compare_cl_coeff);
+	sort(rtn.begin(), rtn.end(), compare_cl_coeff);
 	return rtn;
 }

@@ -2,8 +2,29 @@
 
 #include "Algorithms.h"
 
-class IO_Manager {
-public:
-	static data_sets read_file(const std::string& file);
-	static void write_sorted(std::ostream& ofs, const network_data& data);
-};
+namespace IO_Manager {
+
+	std::vector<network_data> read_file(const std::string& file);
+	template<typename data_type>
+	void write_sorted_data(std::string extension, std::vector<data_type> data, void(*writer_func)(std::ostream&, size_t, const data_type&));
+
+
+
+	template<typename data_type>
+	void write_sorted_data(std::string extension, std::vector<data_type> data, void(*writer_func)(std::ostream&, size_t, const data_type&)) {
+		size_t size = data.size();
+		for (unsigned i = 0; i < size; i++) {
+			std::ostringstream oss;
+			oss << i;
+			std::ofstream ofs;
+			ofs.open(oss.str() + extension);
+			if (!ofs) {
+				std::cout << "Cannot open file for output!" << std::endl;
+			}
+			else {
+				writer_func(ofs, i, data[i]);
+			}
+			ofs.close();
+		}
+	}
+}

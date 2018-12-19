@@ -24,13 +24,13 @@
     <ClCompile Include="network_data.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="IO_Manager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Find_subset.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Algorithms.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IO_Manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -50,7 +50,13 @@
     <ClInclude Include="Relation_array.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Thread_Manager.h">
+    <ClInclude Include="ThreadManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadManager.ipp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
