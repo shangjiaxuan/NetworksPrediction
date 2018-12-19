@@ -4,26 +4,26 @@
 
 using namespace std;
 
-void write_network(ostream& ofs, size_t index, const network_data& data) {
+void write_network(ostream& ost, size_t index, const network_data& data) {
 	for (unsigned i = 0; i < data.num_of_people; i++) {
 		for (unsigned j = 0; j < data.num_of_people; j++) {
 			if (data[i][j].num) {
-				ofs << data.people[i] << '\t' << data.people[j] << '\n';
-				ofs << data[i][j].num << '\t' << data[i][j].sum << '\n';
+				ost << data.people[i] << '\t' << data.people[j] << '\n';
+				ost << data[i][j].num << '\t' << data[i][j].sum << '\n';
 				for (unsigned k = 0; k < data[i][j].num; k++) {
-					ofs << data[i][j].data[k] << '\t';
+					ost << data[i][j].data[k] << '\t';
 				}
-				ofs << "\n\n";
+				ost << "\n\n";
 			}
 		}
 	}
 }
 
-void write_clustering(ostream& ofs, size_t i, const std::vector<clustering>& val) {
-	ofs << std::setprecision(9);
+void write_clustering(ostream& ost, size_t i, const std::vector<clustering>& val) {
+	ost << std::setprecision(9);
 	for (unsigned j = 0; j < val.size(); j++) {
-		ofs << val[j].person << '\n';
-		ofs << val[j].cl_coeff << "\n\n";
+		ost << val[j].person << '\n';
+		ost << val[j].cl_coeff << "\n\n";
 	}
 }
 
