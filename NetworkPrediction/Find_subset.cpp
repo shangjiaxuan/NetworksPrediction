@@ -104,7 +104,7 @@ vector<network_data> Algorithms::separate_sets(network_data& source) {
 	for(int i=0; i<group_index; i++) {
 		passed[i] = set_info{ &found, &source,i + 1 };
 	}
-	vector<network_data> rtn = Thread_Manager<set_info, network_data>::vector_async_copy(passed, find_one_subset);
+	vector<network_data> rtn = Thread_Manager<set_info, network_data>::vector_thread_copy(passed, find_one_subset);
 //	network_data::destroy(source);
 	std::sort(rtn.begin(), rtn.end(), comp_rel_num);
 	return rtn;

@@ -38,7 +38,7 @@ int main() {
 	IO_Manager::write_sorted_data(".txt", data, write_network);
 	cout << "Time writing network data:\n" << time.elapsed() << " seconds.\n" << endl;
 	time.reset();
-	std::vector<std::vector<clustering>> val = Thread_Manager<network_data, std::vector<clustering>>::vector_async(data, Algorithms::find_clustering_coeff);
+	std::vector<std::vector<clustering>> val = Thread_Manager<network_data, std::vector<clustering>>::vector_thread(data, Algorithms::find_clustering_coeff);
 	cout << "Time processing data:\n" << time.elapsed() << " seconds.\n" << endl;
 	time.reset();
 	IO_Manager::write_sorted_data<std::vector<clustering>>(".clust", val, write_clustering);
