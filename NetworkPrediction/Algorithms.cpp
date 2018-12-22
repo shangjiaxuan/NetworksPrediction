@@ -8,7 +8,6 @@
 //5. 人数按入度，出度的分布
 //
 
-
 #include "Algorithms.h"
 
 using namespace std;
