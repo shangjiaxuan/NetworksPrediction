@@ -22,7 +22,7 @@ void write_network(ostream& ost, size_t index, const network_data& data) {
 }
 
 void write_clustering(ostream& ost, size_t i, const std::vector<clustering>& val) {
-	ost << std::setprecision(9);
+	ost << std::setprecision(15);
 	size_t size = val.size();
 	for (unsigned j = 0; j < size; j++) {
 		ost << val[j].person << '\n';
@@ -60,7 +60,7 @@ std::array<int, 12> add_up(const std::vector<std::array<int, 12>>& source) {
 int main() {
 	{
 	//inputs and initializations
-		cout << std::setprecision(9);
+		cout << std::setprecision(15);
 		cout << "Reading file...\n" << endl;
 		Timer<normal> time;
 		std::vector<network_data> data{ IO_Manager::read_file("Link prediction task.URL.txt") };
