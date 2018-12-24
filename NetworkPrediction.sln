@@ -5,11 +5,6 @@ VisualStudioVersion = 15.0.28010.2019
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NetworkPrediction", "NetworkPrediction\NetworkPrediction.vcxproj", "{32464BB9-3509-47A0-8421-1C89CB41BD83}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C8D7EB45-E6D0-4E91-A62D-3036A03F2C3A}"
-	ProjectSection(SolutionItems) = preProject
-		data\ans0.txt = data\ans0.txt
-	EndProjectSection
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64

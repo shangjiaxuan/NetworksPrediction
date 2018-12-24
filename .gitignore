@@ -301,7 +301,7 @@ __pycache__/
 #Project-specific
 [Bb]uild/
 [Ii]ntermediates/
-[Dd]ata/
+#[Dd]ata/
 .leu
 *.png
 *.dll
