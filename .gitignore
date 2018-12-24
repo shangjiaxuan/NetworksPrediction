@@ -299,10 +299,10 @@ __pycache__/
 *.xsd.cs
 
 #Project-specific
-[Aa]rchive\
-[Bb]uild\
-[Ii]ntermediates\
-[Dd]ata\
+[Aa]rchive/
+[Bb]uild/
+[Ii]ntermediates/
+[Dd]ata/
 .leu
 *.png
 *.dll
