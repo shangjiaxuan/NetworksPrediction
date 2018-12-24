@@ -39,9 +39,29 @@ vector<clustering> Algorithms::find_clustering_coeff(network_data & data) {
 				}
 			}
 		}
-		rtn[i].cl_coeff = double(2 * neighbor_edge_count) / (neighbor_count*(neighbor_count - 1));
+		rtn[i].cl_coeff = 2.0 * neighbor_edge_count / (neighbor_count*(neighbor_count - 1));
 		rtn[i].person = data.people[i];
 	}
 	sort(rtn.begin(), rtn.end(), compare_cl_coeff);
 	return rtn;
 }
+
+std::array<int, 12> Algorithms::find_clust_distrib(std::vector<clustering>& data) {
+	std::array<int, 12> rtn{};
+	size_t size = data.size();
+	for ( int i = 0; i < size; i++ ) {
+		if (data[i].cl_coeff == 0) { rtn[0] = rtn[0] + 1; continue; }
+		if (isnan(data[i].cl_coeff)) { rtn[11] = rtn[11] + 1; continue; }
+		unsigned cap = 1;
+		for (; cap < 11 && cap / 10.0 < data[i].cl_coeff; cap++);
+		rtn[cap]=rtn[cap]+1;
+	}
+	return rtn;
+}
+
+
+
+
+
+
+
