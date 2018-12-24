@@ -49,12 +49,12 @@ vector<clustering> Algorithms::find_clustering_coeff(network_data & data) {
 std::array<int, 12> Algorithms::find_clust_distrib(std::vector<clustering>& data) {
 	std::array<int, 12> rtn{};
 	size_t size = data.size();
-	for ( int i = 0; i < size; i++ ) {
-		if (data[i].cl_coeff == 0) { rtn[0] = rtn[0] + 1; continue; }
-		if (isnan(data[i].cl_coeff)) { rtn[11] = rtn[11] + 1; continue; }
+	for ( size_t i = 0; i < size; i++ ) {
+		if (data[i].cl_coeff == 0) { rtn[0]++; continue; }
+		if (isnan(data[i].cl_coeff)) { rtn[11]++; continue; }
 		unsigned cap = 1;
 		for (; cap < 11 && cap / 10.0 < data[i].cl_coeff; cap++);
-		rtn[cap]=rtn[cap]+1;
+		rtn[cap]++;
 	}
 	return rtn;
 }

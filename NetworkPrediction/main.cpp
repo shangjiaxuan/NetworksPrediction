@@ -2,6 +2,8 @@
 #include "ThreadManager.h"
 #include "Utilities.h"
 
+#include <future>
+
 using namespace std;
 
 void write_network(ostream& ost, size_t index, const network_data& data) {
@@ -21,7 +23,8 @@ void write_network(ostream& ost, size_t index, const network_data& data) {
 
 void write_clustering(ostream& ost, size_t i, const std::vector<clustering>& val) {
 	ost << std::setprecision(9);
-	for (unsigned j = 0; j < val.size(); j++) {
+	size_t size = val.size();
+	for (unsigned j = 0; j < size; j++) {
 		ost << val[j].person << '\n';
 		ost << val[j].cl_coeff << "\n\n";
 	}
@@ -44,7 +47,8 @@ void write_clustering_dist(ostream& ost, size_t i, const std::array<int, 12>& da
 
 std::array<int, 12> add_up(const std::vector<std::array<int, 12>>& source) {
 	std::array<int, 12> rtn{};
-	for (int i = 0; i < source.size(); i++) {
+	size_t size = source.size();
+	for (size_t i = 0; i < size; i++) {
 		for (int j = 0; j < 12; j++) {
 			rtn[j] += source[i][j];
 		}
@@ -52,44 +56,43 @@ std::array<int, 12> add_up(const std::vector<std::array<int, 12>>& source) {
 	return rtn;
 }
 
-std::vector<int> find_number(std::vector<network_data>& source) {
-	std::vector<int> rtn(source.size());
-	for (int i = 0; i < source.size(); i++) {
-		rtn[i] = source[i].num_of_people;
-	}
-	return rtn;
-}
-
 
 int main() {
-	cout << std::setprecision(9);
-	cout << "Reading file...\n" << endl;
-	Timer<normal> time;
-	std::vector<network_data> data{IO_Manager::read_file("Link prediction task.URL.txt")};
-	cout << "Time used reading file:\n" << time.elapsed() << " seconds.\n" << endl;
-	time.reset();
-	IO_Manager::write_sorted_data(".txt", data, write_network);
-	cout << "Time writing network data:\n" << time.elapsed() << " seconds.\n" << endl;
-	std::vector<int> num_vec = find_number(data);
-	ofstream ofs;
-	ofs.open("networks_num.txt");
-	for (int i = 0; i < num_vec.size(); i++) {
-		ofs << num_vec[i] << '\n';
+	{
+	//inputs and initializations
+		cout << std::setprecision(9);
+		cout << "Reading file...\n" << endl;
+		Timer<normal> time;
+		std::vector<network_data> data{ IO_Manager::read_file("Link prediction task.URL.txt") };
+		size_t data_sets = data.size();
+		cout << "Time used reading data:\t\t" << time.elapsed() << endl;
+		//process data
+		time.reset();
+		std::vector<std::vector<clustering>> val = Thread_Manager<network_data, std::vector<clustering>>::vector_thread(data, Algorithms::find_clustering_coeff);
+		std::vector<std::array<int, 12>> cdist_v = Thread_Manager<std::vector<clustering>, std::array<int, 12>>::vector_thread(val, Algorithms::find_clust_distrib);
+		std::array<int, 12> all_cdist = add_up(cdist_v);
+		cout << "Time used processing data:\t" << time.elapsed() << endl;
+		//outputs
+		{
+			time.reset();
+			auto t1 = std::async(IO_Manager::write_sorted_data<network_data>, ".txt", data, write_network);
+			auto t2 = std::async(IO_Manager::write_sorted_data<std::vector<clustering>>, ".clust", val, write_clustering);
+			auto t3 = std::async(IO_Manager::write_sorted_data<std::array<int, 12>>, ".cdist", cdist_v, write_clustering_dist);
+			ofstream ofs;
+			ofs.open("networks_num.txt");
+			for (size_t i = 0; i < data_sets; i++) {
+				ofs << data[i].num_of_people << '\n';
+			}
+			ofs.close();
+			ofs.open("all.cdist");
+			write_clustering_dist(ofs, 0, all_cdist);
+			ofs.close();
+			t1.get();
+			t2.get();
+			t3.get();
+			cout << "Time used writing output:\t" << time.elapsed() << endl;
+		}
 	}
-	ofs.close();
-	time.reset();
-	std::vector<std::vector<clustering>> val = Thread_Manager<network_data, std::vector<clustering>>::vector_thread(data, Algorithms::find_clustering_coeff);
-	cout << "Time processing data:\n" << time.elapsed() << " seconds.\n" << endl;
-	time.reset();
-	IO_Manager::write_sorted_data<std::vector<clustering>>(".clust", val, write_clustering);
-	cout << "Time writing clustering coefficient data:\n" << time.elapsed() << " seconds.\n" << endl;
-	time.reset();
-	std::vector<std::array<int, 12>> dist_v = Thread_Manager<std::vector<clustering>, std::array<int, 12>>::vector_thread(val, Algorithms::find_clust_distrib);
-	IO_Manager::write_sorted_data<std::array<int, 12>> ( ".cdist", dist_v, write_clustering_dist );
-	std::array<int, 12> all_dist = add_up(dist_v);
-	ofs.open("all.cdist");
-	write_clustering_dist(ofs, 0, all_dist);
-	ofs.close();
 	system("pause");
 	return 0;
 }

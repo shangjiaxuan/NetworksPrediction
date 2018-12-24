@@ -25,7 +25,7 @@ enum TimerType {
 //unit is seconds for normal clock
 //microseconds for fast clock
 //hours for slow clock
-template<TimerType type>
+template<TimerType type=normal>
 class Timer {
 public:
 	void reset();
