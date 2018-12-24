@@ -4,11 +4,7 @@
 
 #include "Utilities.h"
 
-#include <stack>
-
 using namespace std;
-
-
 
 bool comp_num_of_people(const network_data& i, const network_data& j) {
 	return i.num_of_people < j.num_of_people;
@@ -16,23 +12,6 @@ bool comp_num_of_people(const network_data& i, const network_data& j) {
 
 bool comp_rel_num(const network_data& i, const network_data& j) {
 	return i.num_of_directional_edge < j.num_of_directional_edge;
-}
-
-
-
-void Algorithms::find_one_subset_loop(vector<char>& cur_group,
-									vector<int>& found,
-									const network_data& source,
-									int cur,
-									int start,
-									int group) {
-	for(unsigned i = start; i < source.num_of_people; i++) {
-		if(!found[i]&&( source[cur][i].num || source[i][cur].num )) {
-			found[i] = group;
-			cur_group[i] = true;
-			find_one_subset_loop(cur_group, found, source, i, start, group);
-		}
-	}
 }
 
 vector<network_data> Algorithms::separate_sets_move(network_data& source) {
@@ -176,6 +155,10 @@ network_data Algorithms::find_one_subset_move(set_info& info) {
 
 
 
+
+/*
+
+
 void find_one_subset_loop_test(vector<char>& cur_group,
 							   vector<int>& found,
 							   const network_data& source,
@@ -205,6 +188,20 @@ void find_one_subset_loop_test(vector<char>& cur_group,
 	}
 }
 
+void Algorithms::find_one_subset_loop(vector<char>& cur_group,
+									vector<int>& found,
+									const network_data& source,
+									int cur,
+									int start,
+									int group) {
+	for(unsigned i = start; i < source.num_of_people; i++) {
+		if(!found[i]&&( source[cur][i].num || source[i][cur].num )) {
+			found[i] = group;
+			cur_group[i] = true;
+			find_one_subset_loop(cur_group, found, source, i, start, group);
+		}
+	}
+}
 
 
 
@@ -299,3 +296,5 @@ network_data Algorithms::find_one_subset(set_info& info) {
 	cout << "Time used calculating properties:\t" << time.elapsed() << endl;
 	return rtn;
 }
+
+*/
