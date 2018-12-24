@@ -1,63 +1,73 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
+    <Filter Include="00 Framework">
+      <UniqueIdentifier>{acf8c4ec-d4bb-4a20-8f21-affd26fc05ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00 Framework\03 IO">
+      <UniqueIdentifier>{4a008e02-c32d-47da-80ac-1999a400608a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00 Framework\00 Misc">
+      <UniqueIdentifier>{b0b3aeda-b490-4acf-b6b5-7417b36aeac0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00 Framework\01 Thread">
+      <UniqueIdentifier>{e3af581f-cd18-4cfd-aa34-1c1612f6c149}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00 Framework\02 DS">
+      <UniqueIdentifier>{ff4f7146-4fbf-4bfe-ba32-44db0d2e0622}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01 Interface">
+      <UniqueIdentifier>{6b00b9a0-ad49-4bd5-a7ba-a62cb7ef9881}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02 Structs">
+      <UniqueIdentifier>{7dbe79e9-cb1e-4c28-8fd9-6e9ef17ba662}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03 Misc">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="Framework">
-      <UniqueIdentifier>{acf8c4ec-d4bb-4a20-8f21-affd26fc05ae}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="network_data.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Find_subset.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Algorithms.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>03 Misc</Filter>
     </ClCompile>
     <ClCompile Include="IO_Manager.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>00 Framework\03 IO</Filter>
+    </ClCompile>
+    <ClCompile Include="Find_subset.cpp">
+      <Filter>00 Framework\03 IO</Filter>
+    </ClCompile>
+    <ClCompile Include="network_data.cpp">
+      <Filter>00 Framework\02 DS</Filter>
+    </ClCompile>
+    <ClCompile Include="Algorithms.cpp">
+      <Filter>01 Interface</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Algorithms.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Header.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="IO_Manager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="network_data.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Relation_array.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ThreadManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ThreadManager.ipp">
-      <Filter>Header Files</Filter>
+      <Filter>00 Framework\03 IO</Filter>
     </ClInclude>
     <ClInclude Include="Utilities.h">
-      <Filter>Header Files</Filter>
+      <Filter>00 Framework\00 Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="Header.h">
+      <Filter>00 Framework\00 Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadManager.h">
+      <Filter>00 Framework\01 Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadManager.ipp">
+      <Filter>00 Framework\01 Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="network_data.h">
+      <Filter>00 Framework\02 DS</Filter>
+    </ClInclude>
+    <ClInclude Include="Algorithms.h">
+      <Filter>01 Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Relation_array.h">
+      <Filter>02 Structs</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

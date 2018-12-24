@@ -7,6 +7,9 @@ struct list {
 	uint64_t sum = 0;
 	unsigned* data = nullptr;
 
+	//reserved field for use in network data as network property
+	unsigned same_friend = 0;
+
 	list() = default;
 	~list();
 	list(const list& source);
@@ -20,6 +23,7 @@ struct list {
 
 struct network_data {
 	list* map = nullptr;
+
 	unsigned num_of_people = 0;
 	int max_index = 0;
 	unsigned num_of_directional_edge = 0;

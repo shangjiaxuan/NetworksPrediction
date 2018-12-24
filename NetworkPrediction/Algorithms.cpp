@@ -12,10 +12,6 @@
 
 using namespace std;
 
-vector<item> Algorithms::func1(const network_data& data) {
-	return vector<item>();
-}
-
 bool compare_cl_coeff(const clustering& val1, const clustering& val2) {
 	if (isnan(val1.cl_coeff) && isnan(val2.cl_coeff)) return val1.person < val2.person;
 	if (isnan(val1.cl_coeff)) return false;
@@ -59,9 +55,80 @@ std::array<int, 12> Algorithms::find_clust_distrib(std::vector<clustering>& data
 	return rtn;
 }
 
+std::vector<std::vector<int>> Algorithms::find_num_of_same_friend(network_data& data) {
+	std::vector<std::vector<int>> rtn(data.num_of_people);
+	for (unsigned i = 0; i < data.num_of_people; i++) {
+		rtn[i].resize(data.num_of_people);
+	}
+	for (unsigned i = 0; i < data.num_of_people; i++) {
+		for (unsigned j = 0; j < data.num_of_people; j++) {
+			rtn[i][j] = 0;
+			for (unsigned k = 0; k < data.num_of_people; k++) {
+				if (i!=j && i!=k && k!=j
+					&&(data[i][k].num||data[k][i].num)
+					&&(data[j][k].num||data[k][j].num))
+					rtn[i][j]++;
+			}
+		}
+	}
+	return rtn;
+}
 
+std::vector<unsigned> Algorithms::count_friends_and_trios(network_data& data) {
+	count_same_friends(data);
+	std::vector<unsigned> rtn;
+	unsigned max_same = 0;
+	//scope for same_friends
+	{
+//		std::vector<std::vector<int>> same_friends = find_num_of_same_friend(data);
+		for (unsigned i = 0; i < data.num_of_people; i++) {
+			for (unsigned j = i + 1; j < data.num_of_people; j++) {
+				max_same = std::max(max_same, data[i][j].same_friend);
+			}
+		}
+		rtn.resize(( max_same + 1 ) * 2);
+		for (unsigned i = 0; i < data.num_of_people; i++) {
+			for (unsigned j = i + 1; j < data.num_of_people; j++) {
+				rtn[2* data[i][j].same_friend]++;
+				if (data[i][j].num || data[j][i].num) rtn[2* data[i][j].same_friend +1]++;
+			}
+		}
+	}
+	return rtn;
+}
 
+void Algorithms::count_same_friends(network_data& data) {
+	for (unsigned i = 0; i < data.num_of_people; i++) {
+		for (unsigned j = 0; j < data.num_of_people; j++) {
+			for (unsigned k = 0; k < data.num_of_people; k++) {
+				if (i != j && i != k && k != j
+					&& ( data[i][k].num || data[k][i].num )
+					&& ( data[j][k].num || data[k][j].num ))
+					data[i][j].same_friend++;
+			}
+		}
+	}
+}
 
+bool Algorithms::comp_weight(const item& it1, const item& it2) {
+	return it1.weight >= it2.weight;
+}
+
+vector<item> Algorithms::find_using_pure_same_friends(network_data& data) {
+	vector<item> rtn;
+	rtn.reserve( data.num_of_people*( data.num_of_people + 1 ) / 2 );
+	size_t offset = 0;
+	for (unsigned i = 0; i < data.num_of_people; i++) {
+		for (unsigned j = i + 1; j < data.num_of_people; j++) {
+			if (data[i][j].same_friend&&!(data[i][j].num||data[j][i].num)){
+				rtn.emplace_back(item{ data.people[j], data.people[i],double(data[i][j].same_friend),&data[i][j] });
+			}
+		}
+	}
+	rtn.shrink_to_fit();
+	std::sort(rtn.begin(), rtn.end(), comp_weight);
+	return rtn;
+}
 
 
 

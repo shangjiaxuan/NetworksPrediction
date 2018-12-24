@@ -56,6 +56,52 @@ std::array<int, 12> add_up(const std::vector<std::array<int, 12>>& source) {
 	return rtn;
 }
 
+std::vector<double> add_percentages(std::vector<std::vector<unsigned>>& data) {
+	size_t overall_size = data.size();
+	size_t rtn_size = 0;
+	for (size_t i = 0; i < overall_size; i++) {
+		rtn_size = std::max(rtn_size, data[i].size());
+	}
+	rtn_size /= 2;
+	unsigned* same_friends = new unsigned[rtn_size]();
+	unsigned* is_friend = new unsigned[rtn_size]();
+	for (size_t i = 0; i < overall_size; i++) {
+		size_t cur_size = ( data[i].size() >> 0x01 );
+		for (size_t j = 0; j < cur_size; j++) {
+			same_friends[j] += data[i][j << 0x01];
+			is_friend[j] += data[i][( j << 0x01 ) + 1];
+		}
+	}
+	std::vector<double> rtn(rtn_size);
+	for (size_t i = 0; i < rtn_size; i++) {
+		rtn[i] = double(is_friend[i]) / same_friends[i];
+	}
+	delete[] same_friends;
+	delete[] is_friend;
+	return rtn;
+}
+
+void write_fdist(std::ostream& ost, std::vector<double>& data) {
+	size_t size = data.size();
+	ost << std::setprecision(15);
+	for (size_t i = 0; i < data.size(); i++) {
+		ost << i << ":\t" << data[i]<<'\n';
+	}
+	ost << std::endl;
+}
+
+
+std::vector<item> sort_all_item(const std::vector<std::vector<item>>& data) {
+	size_t size = data.size();
+	std::vector<item> rtn;
+	for (int i = 0; i < size; i++) {
+		std::vector<item> temp;
+		std::merge(rtn.begin(), rtn.end(), data[i].begin(), data[i].end(), std::back_inserter(temp), Algorithms::comp_weight);
+		rtn = temp;
+	}
+	return rtn;
+}
+
 
 int main() {
 	{
@@ -70,7 +116,11 @@ int main() {
 		time.reset();
 		std::vector<std::vector<clustering>> val = Thread_Manager<network_data, std::vector<clustering>>::vector_thread(data, Algorithms::find_clustering_coeff);
 		std::vector<std::array<int, 12>> cdist_v = Thread_Manager<std::vector<clustering>, std::array<int, 12>>::vector_thread(val, Algorithms::find_clust_distrib);
+		std::vector<std::vector<unsigned>> fdist0_v = Thread_Manager<network_data, std::vector<unsigned>>::vector_thread(data, Algorithms::count_friends_and_trios);
+		std::vector<std::vector<item>> ans0_v = Thread_Manager<network_data, std::vector<item>>::vector_thread(data, Algorithms::find_using_pure_same_friends);
+		std::vector<double> fdist0_all = add_percentages(fdist0_v);
 		std::array<int, 12> all_cdist = add_up(cdist_v);
+		std::vector<item> ans0 = sort_all_item(ans0_v);
 		cout << "Time used processing data:\t" << time.elapsed() << endl;
 		//outputs
 		{
@@ -86,6 +136,24 @@ int main() {
 			ofs.close();
 			ofs.open("all.cdist");
 			write_clustering_dist(ofs, 0, all_cdist);
+			ofs.close();
+			ofs.open("fdist_0.txt");
+			write_fdist(ofs, fdist0_all);
+			ofs.close();
+			ofs.open("ans0_s.txt");
+			size_t num_of_edge = ans0.size();
+			for (size_t i = 0; i < num_of_edge; i++) {
+				ofs << ans0[i].d_person << '\t' << ans0[i].s_person << '\n';
+//				for (unsigned j = 0; j < ans0[i].contact_list->num; j++) {
+//					ofs << ans0[i].contact_list->data[j] << '\t';
+//				}
+				ofs << ans0[i].weight << "\n\n";
+			}
+			ofs.close();
+			ofs.open("ans0.txt");
+			for (size_t i = 0; i < 10000; i++) {
+				ofs << ans0[i].d_person << ' ' << ans0[i].s_person << '\n';
+			}
 			ofs.close();
 			t1.get();
 			t2.get();
