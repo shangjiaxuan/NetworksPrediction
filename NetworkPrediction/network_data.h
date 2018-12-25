@@ -8,7 +8,8 @@ struct list {
 	unsigned* data = nullptr;
 
 	//reserved field for use in network data as network property
-	unsigned same_friend = 0;
+	//dynamically resembles a weight for this node
+	double weight = 0;
 
 	list() = default;
 	~list();

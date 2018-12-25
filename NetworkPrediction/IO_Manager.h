@@ -27,4 +27,6 @@ namespace IO_Manager {
 			ofs.close();
 		}
 	}
+
+	void write_network(std::ostream& ost, size_t index, const network_data& data);
 }

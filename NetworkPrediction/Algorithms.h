@@ -24,6 +24,7 @@ public:
 	//Sample output function
 	static bool comp_weight(const item& it1, const item& it2);
 	static std::vector<item> find_using_pure_same_friends(network_data& data);
+	static std::vector<item> find_using_sum(network_data& data);
 
 	//For clustering coefficients
 	static std::vector<clustering> find_clustering_coeff(network_data& data);

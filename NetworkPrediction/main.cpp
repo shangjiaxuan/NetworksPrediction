@@ -6,21 +6,6 @@
 
 using namespace std;
 
-void write_network(ostream& ost, size_t index, const network_data& data) {
-	for (unsigned i = 0; i < data.num_of_people; i++) {
-		for (unsigned j = 0; j < data.num_of_people; j++) {
-			if (data[i][j].num) {
-				ost << data.people[i] << '\t' << data.people[j] << '\n';
-				ost << data[i][j].num << '\t' << data[i][j].sum << '\n';
-				for (unsigned k = 0; k < data[i][j].num; k++) {
-					ost << data[i][j].data[k] << '\t';
-				}
-				ost << "\n\n";
-			}
-		}
-	}
-}
-
 void write_clustering(ostream& ost, size_t i, const std::vector<clustering>& val) {
 	ost << std::setprecision(15);
 	size_t size = val.size();
@@ -114,50 +99,66 @@ int main() {
 		cout << "Time used reading data:\t\t" << time.elapsed() << endl;
 		//process data
 		time.reset();
-		std::vector<std::vector<clustering>> val = Thread_Manager<network_data, std::vector<clustering>>::vector_thread(data, Algorithms::find_clustering_coeff);
-		std::vector<std::array<int, 12>> cdist_v = Thread_Manager<std::vector<clustering>, std::array<int, 12>>::vector_thread(val, Algorithms::find_clust_distrib);
-		std::vector<std::vector<unsigned>> fdist0_v = Thread_Manager<network_data, std::vector<unsigned>>::vector_thread(data, Algorithms::count_friends_and_trios);
-		std::vector<std::vector<item>> ans0_v = Thread_Manager<network_data, std::vector<item>>::vector_thread(data, Algorithms::find_using_pure_same_friends);
-		std::vector<double> fdist0_all = add_percentages(fdist0_v);
-		std::array<int, 12> all_cdist = add_up(cdist_v);
-		std::vector<item> ans0 = sort_all_item(ans0_v);
+//		std::vector<std::vector<clustering>> val = Thread_Manager<network_data, std::vector<clustering>>::vector_thread(data, Algorithms::find_clustering_coeff);
+//		std::vector<std::array<int, 12>> cdist_v = Thread_Manager<std::vector<clustering>, std::array<int, 12>>::vector_thread(val, Algorithms::find_clust_distrib);
+//		std::vector<std::vector<unsigned>> fdist0_v = Thread_Manager<network_data, std::vector<unsigned>>::vector_thread(data, Algorithms::count_friends_and_trios);
+//		std::vector<std::vector<item>> ans0_v = Thread_Manager<network_data, std::vector<item>>::vector_thread(data, Algorithms::find_using_pure_same_friends);
+		std::vector<std::vector<item>> ans1_v = Thread_Manager<network_data, std::vector<item>>::vector_thread(data, Algorithms::find_using_sum);
+//		std::vector<double> fdist0_all = add_percentages(fdist0_v);
+//		std::array<int, 12> all_cdist = add_up(cdist_v);
+//		std::vector<item> ans0 = sort_all_item(ans0_v);
+		std::vector<item> ans1 = sort_all_item(ans1_v);
 		cout << "Time used processing data:\t" << time.elapsed() << endl;
 		//outputs
 		{
 			time.reset();
-			auto t1 = std::async(IO_Manager::write_sorted_data<network_data>, ".txt", data, write_network);
-			auto t2 = std::async(IO_Manager::write_sorted_data<std::vector<clustering>>, ".clust", val, write_clustering);
-			auto t3 = std::async(IO_Manager::write_sorted_data<std::array<int, 12>>, ".cdist", cdist_v, write_clustering_dist);
+			auto t1 = std::async(IO_Manager::write_sorted_data<network_data>, ".txt", data, IO_Manager::write_network);
+//			auto t2 = std::async(IO_Manager::write_sorted_data<std::vector<clustering>>, ".clust", val, write_clustering);
+//			auto t3 = std::async(IO_Manager::write_sorted_data<std::array<int, 12>>, ".cdist", cdist_v, write_clustering_dist);
 			ofstream ofs;
-			ofs.open("networks_num.txt");
-			for (size_t i = 0; i < data_sets; i++) {
-				ofs << data[i].num_of_people << '\n';
-			}
-			ofs.close();
-			ofs.open("all.cdist");
-			write_clustering_dist(ofs, 0, all_cdist);
-			ofs.close();
-			ofs.open("fdist_0.txt");
-			write_fdist(ofs, fdist0_all);
-			ofs.close();
-			ofs.open("ans0_s.txt");
-			size_t num_of_edge = ans0.size();
+//			ofs.open("networks_num.txt");
+//			for (size_t i = 0; i < data_sets; i++) {
+//				ofs << data[i].num_of_people << '\n';
+//			}
+//			ofs.close();
+//			ofs.open("all.cdist");
+//			write_clustering_dist(ofs, 0, all_cdist);
+//			ofs.close();
+//			ofs.open("fdist_0.txt");
+//			write_fdist(ofs, fdist0_all);
+//			ofs.close();
+//			ofs.open("ans0_s.txt");
+//			size_t num_of_edge = ans0.size();
+//			for (size_t i = 0; i < num_of_edge; i++) {
+//				ofs << ans0[i].d_person << '\t' << ans0[i].s_person << '\n';
+//				ofs << ans0[i].weight << "\n\n";
+//			}
+//			ofs.close();
+//			ofs.open("ans0.txt");
+//			for (size_t i = 0; i < 10000; i++) {
+//				ofs << ans0[i].d_person << '\t' << ans0[i].s_person << '\n';
+//			}
+//			ofs.close();
+			ofs.open("ans1_s.txt");
+			ofs << std::setprecision(17);
+			size_t num_of_edge = ans1.size();
 			for (size_t i = 0; i < num_of_edge; i++) {
-				ofs << ans0[i].d_person << '\t' << ans0[i].s_person << '\n';
+				ofs << ans1[i].d_person << '\t' << ans1[i].s_person << '\n';
 //				for (unsigned j = 0; j < ans0[i].contact_list->num; j++) {
 //					ofs << ans0[i].contact_list->data[j] << '\t';
 //				}
-				ofs << ans0[i].weight << "\n\n";
+				ofs << ans1[i].weight << "\n\n";
 			}
 			ofs.close();
-			ofs.open("ans0.txt");
-			for (size_t i = 0; i < 10000; i++) {
-				ofs << ans0[i].d_person << ' ' << ans0[i].s_person << '\n';
+			ofs.open("ans1.txt");
+			for (size_t i = 0; i < ans1.size(); i++) {
+				ofs << ans1[i].d_person << '\t' << ans1[i].s_person << '\n';
 			}
 			ofs.close();
-			t1.get();
-			t2.get();
-			t3.get();
+
+//			t1.get();
+//			t2.get();
+//			t3.get();
 			cout << "Time used writing output:\t" << time.elapsed() << endl;
 		}
 	}
