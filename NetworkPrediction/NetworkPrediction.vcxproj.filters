@@ -43,6 +43,9 @@
     <ClCompile Include="Algorithms.cpp">
       <Filter>01 Interface</Filter>
     </ClCompile>
+    <ClCompile Include="ThreadManager.cpp">
+      <Filter>00 Framework\01 Thread</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IO_Manager.h">

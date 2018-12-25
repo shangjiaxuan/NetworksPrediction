@@ -9,7 +9,7 @@ struct list {
 
 	//reserved field for use in network data as network property
 	//dynamically resembles a weight for this node
-	double weight = 0;
+//	double weight = 0;
 
 	list() = default;
 	~list();
