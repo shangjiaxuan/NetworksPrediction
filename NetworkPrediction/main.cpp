@@ -202,6 +202,7 @@ int main() {
 	size_t data_sets = data.size();
 #ifdef DEBUG
 	cout << "Time used reading data:\t\t" << time.elapsed() << endl;
+	cout << "Processing data, please wait:" << endl;
 	//process data
 	time.reset();
 #endif
@@ -213,25 +214,25 @@ int main() {
 	}
 	std::vector<std::future<std::vector<clustering>>> val_f = Thread_Manager::vector_async<network_data, std::vector<clustering>>(data, Algorithms::find_clustering_coeff);
 	std::vector<std::future<std::vector<unsigned>>> fdist_v_f = Thread_Manager::vector_async<network_data, std::vector<unsigned>>(data, Algorithms::count_friends_and_trios);
-	std::array<std::vector<std::vector<item>>, calc_funcs.size()> ans_v_v;
+	std::array<std::vector<std::vector<item>>, calc_funcs.size()> ans_v_a;
 	for (size_t i = 0; i < calc_funcs.size(); i++) {
-		ans_v_v[i] =
+		ans_v_a[i] =
 			Thread_Manager::get_future_vector_reverse<std::vector<item>>(all_ans_vecs[i]);
 	}
 	std::vector<std::vector<clustering>> val = Thread_Manager::get_future_vector_reverse<std::vector<clustering>>(val_f);
 	std::vector<std::vector<unsigned>> fdist_v = Thread_Manager::get_future_vector_reverse<std::vector<unsigned>>(fdist_v_f);
 	std::vector<std::future<std::array<int, 12>>> cdist_v_f = Thread_Manager::vector_async<std::vector<clustering>, std::array<int, 12>>(val, Algorithms::find_clust_distrib);
-	std::array<std::future<std::vector<item>>, calc_funcs.size()> ans_f_v = 
+	std::array<std::future<std::vector<item>>, calc_funcs.size()> ans_f_a = 
 		Thread_Manager::array_async<
 			std::vector<std::vector<item>>,
 			std::vector<item>,
 			calc_funcs.size()>
-		(ans_v_v, sort_all_item);
+		(ans_v_a, sort_all_item);
 	std::vector<double> fdist_all = add_percentages(fdist_v);
 	std::vector<std::array<int, 12>> cdist_v = Thread_Manager::get_future_vector<std::array<int, 12>>(cdist_v_f);
 	std::array<int, 12> all_cdist = add_up(cdist_v);
 	std::array<std::vector<item>, calc_funcs.size()> ans_v=
-		Thread_Manager::get_future_array_reverse<std::vector<item>,calc_funcs.size()>(ans_f_v);
+		Thread_Manager::get_future_array_reverse<std::vector<item>,calc_funcs.size()>(ans_f_a);
 	std::vector<item> ans_all;
 	ans_all.reserve(10000 + calc_funcs.size() - 2);
 	ans_all = merge_different(ans_v[0], ans_v[1]);

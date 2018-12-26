@@ -19,17 +19,14 @@
     <Filter Include="01 Interface">
       <UniqueIdentifier>{6b00b9a0-ad49-4bd5-a7ba-a62cb7ef9881}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02 Structs">
-      <UniqueIdentifier>{7dbe79e9-cb1e-4c28-8fd9-6e9ef17ba662}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03 Misc">
+    <Filter Include="02 Misc">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>03 Misc</Filter>
+      <Filter>02 Misc</Filter>
     </ClCompile>
     <ClCompile Include="IO_Manager.cpp">
       <Filter>00 Framework\03 IO</Filter>
@@ -70,7 +67,7 @@
       <Filter>01 Interface</Filter>
     </ClInclude>
     <ClInclude Include="Relation_array.h">
-      <Filter>02 Structs</Filter>
+      <Filter>00 Framework\02 DS</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
