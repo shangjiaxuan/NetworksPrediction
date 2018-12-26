@@ -7,14 +7,16 @@ namespace IO_Manager {
 //		Timer<normal> time{};
 		std::ifstream ifs;
 		ifs.open(file);
+#ifdef DEBUG
 		if (!ifs) {
 			std::cout << "Failed to read from input file!" << std::endl;
 			return std::vector<network_data>();
 		}
+#endif
 		ifs.seekg(0, std::ios::end);
 		const std::streamoff size = ifs.tellg();
 		std::string str;
-		str.resize(size);
+		str.resize(size_t(size));
 		ifs.seekg(0);
 		ifs.read(&str[0], size);
 		ifs.close();
@@ -60,14 +62,18 @@ namespace IO_Manager {
 			}
 //			std::cout << "Time used associating people with indexes:\t" << time.elapsed() << std::endl;
 //			time.reset();
+#ifdef DEBUG
 			try {
+#endif
 				rtn.map = new list[rtn.num_of_people * rtn.num_of_people]{};
 				rtn.people = new int[rtn.num_of_people];
+#ifdef DEBUG
 			} catch (std::bad_alloc& ba) {
 				std::cerr << ba.what() << std::endl;
 				network_data::destroy(rtn);
 				throw std::runtime_error("Error allocating whole matrix for reading all data.");
 			}
+#endif
 //			std::cout << "Time used allocating map:\t\t\t" << time.elapsed() << std::endl;
 //			time.reset();
 			rtn.num_of_people = 0;
@@ -91,7 +97,9 @@ namespace IO_Manager {
 //		std::cout << "Time counting sum and num for each edge:\t" << time.elapsed() << std::endl;
 //		time.reset();
 		iss.seekg(0);
+#ifdef DEBUG
 		try {
+#endif
 			for (unsigned i = 0; i < rtn.num_of_people; i++) {
 				for (unsigned j = 0; j < rtn.num_of_people; j++) {
 					if (rtn[i][j].num) {
@@ -100,11 +108,13 @@ namespace IO_Manager {
 					}
 				}
 			}
+#ifdef DEBUG
 		} catch (std::bad_alloc& ba) {
 			std::cerr << ba.what() << std::endl;
 			network_data::destroy(rtn);
 			throw std::runtime_error("Error allocating while reading each edge.");
 		}
+#endif
 //		std::cout << "Time allocating for list arrays:\t\t" << time.elapsed() << std::endl;
 //		time.reset();
 		while (iss.good()) {

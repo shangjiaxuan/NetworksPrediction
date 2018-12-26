@@ -47,7 +47,7 @@ public:
 	static std::array<int, 12> find_clust_distrib(std::vector<clustering>& data);
 
 	//For calculating the same_friend-friend_probability list
-	static std::vector<unsigned> count_friends_and_trios(network_data& data, double*const*const weight_map);
+	static std::vector<unsigned> count_friends_and_trios(network_data& data);
 
 private:
 	//Utility function to use when finding the result 

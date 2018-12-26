@@ -1,6 +1,7 @@
 #include "Algorithms.h"
 #include "ThreadManager.h"
 #include "IO_Manager.h"
+#include "network_data.h"
 
 //#include "Utilities.h"
 
@@ -88,7 +89,7 @@ network_data Algorithms::find_one_subset_move(set_info& info) {
 //	time.reset();
 	rtn.index = new unsigned[rtn.max_index + 1];
 	rtn.people = new int[rtn.num_of_people];
-	rtn.map = new list[rtn.num_of_people * rtn.num_of_people]{};
+	rtn.map = new ::list[rtn.num_of_people * rtn.num_of_people]{};
 //	cout << "Time used allocating memory:\t" << time.elapsed() << endl;
 //	time.reset();
 	int i_rtn = 0;

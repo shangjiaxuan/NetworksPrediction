@@ -16,6 +16,8 @@ void Algorithms::count_same_friends(network_data& data, double*const*const weigh
 	weight_map[i][j] = 0;
 	for (unsigned k = 0; k < data.num_of_people; k++) {
 		if (i != k && k != j
+			//This is evaluated as most time-consuming
+			//Likely reason: cache miss
 			&& ( data[i][k].num || data[k][i].num )
 			&& ( data[k][j].num || data[j][k].num ))
 			weight_map[i][j] += 1;
@@ -26,7 +28,10 @@ void Algorithms::multiply_four_sums(network_data& data, double*const*const weigh
 	weight_map[i][j] = 0;
 	for (unsigned k = 0; k < data.num_of_people; k++) {
 		if (j != k && k != i) {
-			weight_map[i][j] += sqrt(sqrt(double(data[i][k].sum * data[k][i].sum) * double(data[k][j].sum * data[j][k].sum)));
+			//bottle_neck_2
+			//most likely due to cache miss
+			double temp = double(data[i][k].sum * data[k][i].sum) * double(data[k][j].sum * data[j][k].sum);
+			weight_map[i][j] += sqrt(sqrt(temp));
 		}
 	}
 }
@@ -35,7 +40,10 @@ void Algorithms::multiply_four_nums(network_data& data, double*const*const weigh
 	weight_map[i][j] = 0;
 	for (unsigned k = 0; k < data.num_of_people; k++) {
 		if (j != k && k != i) {
-			weight_map[i][j] += sqrt(sqrt(double(data[i][k].num * data[k][i].num) * double(data[k][j].num * data[j][k].num)));
+			//bottle_neck_3
+			//most likely due to cache miss
+			double temp = double(data[i][k].num * data[k][i].num) * double(data[k][j].num * data[j][k].num);
+			if(temp) weight_map[i][j] += sqrt(sqrt(temp));
 		}
 	}
 }
@@ -54,6 +62,8 @@ void Algorithms::add_four_nums(network_data& data, double*const*const weight_map
 	weight_map[i][j] = 0;
 	for (unsigned k = 0; k < data.num_of_people; k++) {
 		if (j != k && k != i) {
+			//bottle_neck_1
+			//most likely due to cache miss
 			weight_map[i][j] += ( data[i][k].num + data[k][i].num + data[k][j].num + data[j][k].num );
 		}
 	}
@@ -64,7 +74,10 @@ void Algorithms::multiply_two_sums(network_data& data, double*const*const weight
 	weight_map[i][j] = 0;
 	for (unsigned k = 0; k < data.num_of_people; k++) {
 		if (j != k && k != i) {
-			weight_map[i][j] += sqrt(double(data[i][k].sum + data[k][i].sum) * double(data[k][j].sum + data[j][k].sum));
+			//bottle_neck_0
+			//most likely due to cache miss
+			double temp = double(data[i][k].sum + data[k][i].sum) * double(data[k][j].sum + data[j][k].sum);
+			if (temp) weight_map[i][j] += sqrt(temp);
 		}
 	}
 	weight_map[i][j] /= 2;
@@ -74,7 +87,10 @@ void Algorithms::multiply_two_nums(network_data& data, double*const*const weight
 	weight_map[i][j] = 0;
 	for (unsigned k = 0; k < data.num_of_people; k++) {
 		if (j != k && k != i) {
-			weight_map[i][j] += sqrt(double(data[i][k].num + data[k][i].num) * double(data[k][j].num + data[j][k].num));
+			//bottle_neck_4
+			//most likely due to cache miss
+			double temp = double(data[i][k].num + data[k][i].num) * double(data[k][j].num + data[j][k].num);
+			if (temp) weight_map[i][j] += sqrt(temp);
 		}
 	}
 	weight_map[i][j] /= 2;
@@ -302,7 +318,12 @@ std::vector<std::vector<int>> Algorithms::find_num_of_same_friend(network_data& 
 	return rtn;
 }
 
-std::vector<unsigned> Algorithms::count_friends_and_trios(network_data& data, double*const*const weight_map) {
+std::vector<unsigned> Algorithms::count_friends_and_trios(network_data& data) {
+	double** const weight_map = new double*[data.num_of_people];
+	double* const map = new double[data.num_of_people*data.num_of_people]{};
+	for (size_t i = 0; i < data.num_of_people; i++) {
+		weight_map[i] = map + data.num_of_people*i;
+	}
 	loop_no_direction(data, weight_map, count_same_friends);
 	std::vector<unsigned> rtn;
 	double max_same = 0;
@@ -322,10 +343,10 @@ std::vector<unsigned> Algorithms::count_friends_and_trios(network_data& data, do
 			}
 		}
 	}
+	delete[] weight_map;
+	delete[] map;
 	return rtn;
 }
-
-
 
 
 

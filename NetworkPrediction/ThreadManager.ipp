@@ -7,11 +7,17 @@ std::vector<output> Thread_Manager::vector_thread(std::vector<input>& source, ou
 	std::vector<output> rtn(size);
 	switch (int(workers)) {
 	case -1:
+#ifdef DEBUG
 		std::cout << "Cannot identify hardware concurrency, multithreading failed!\n";
+#endif
 	case 0:
+#ifdef DEBUG
 		std::cout << "Only one thread supported!\n";
+#endif
 	case 1:
+#ifdef DEBUG
 		std::cout << "Working as single thread!\n" << std::endl;
+#endif
 		for (size_t i = 0; i < size; i++) {
 			rtn[i] = function(source[i]);
 		}
@@ -57,11 +63,17 @@ std::vector<output> Thread_Manager::vector_thread_copy(std::vector<input>& sourc
 	std::vector<output> rtn(size);
 	switch (int(workers)) {
 	case -1:
+#ifdef DEBUG
 		std::cout << "Cannot identify hardware concurrency, multithreading failed!\n";
+#endif
 	case 0:
+#ifdef DEBUG
 		std::cout << "Only one thread supported!\n";
+#endif
 	case 1:
+#ifdef DEBUG
 		std::cout << "Working as single thread!\n" << std::endl;
+#endif
 		for (size_t i = 0; i < size; i++) {
 			rtn[i] = function(source[i]);
 		}
@@ -168,7 +180,7 @@ inline std::array<type, size> Thread_Manager::get_future_array_reverse(std::arra
 template<typename type>
 inline std::vector<type> Thread_Manager::get_future_vector(std::vector<std::future<type>>& source) {
 	std::vector<type> rtn(source.size());
-	for (int i = 0; i <source.size(); i++) {
+	for (size_t i = 0; i <source.size(); i++) {
 		source[i].wait();
 		rtn[i] = source[i].get();
 	}
