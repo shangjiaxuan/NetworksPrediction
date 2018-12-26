@@ -12,8 +12,8 @@
 
 using namespace std;
 
-void Algorithms::count_same_friends(network_data& data, double*const*const weight_map, unsigned i, unsigned j) {
-	weight_map[i][j] = 0;
+void Algorithms::count_same_friends_all(network_data& data, double*const*const weight_map, unsigned i, unsigned j) {
+//	weight_map[i][j] = 0;
 	for (unsigned k = 0; k < data.num_of_people; k++) {
 		if (i != k && k != j
 			//This is evaluated as most time-consuming
@@ -24,8 +24,92 @@ void Algorithms::count_same_friends(network_data& data, double*const*const weigh
 	}
 }
 
+void Algorithms::count_same_friends_twice_nzero(network_data& data, double*const*const weight_map, unsigned i, unsigned j) {
+//	weight_map[i][j] = 0;
+	for (unsigned k = 0; k < data.num_of_people; k++) {
+		if (i != k && k != j) {
+			unsigned time_ik = 0;
+			unsigned time_jk = 0;
+			bool ik = false;
+			bool jk = false;
+			if (data[i][k].num) {
+				ik = true;
+				for (unsigned n = 0; n < data[i][k].num; n++) {
+					if (data[i][k].data[n]) time_ik++;
+				}
+			}
+			if (data[k][i].num) {
+				ik = true;
+				for (unsigned n = 0; n < data[k][i].num; n++) {
+					if (data[k][i].data[n]) time_ik++;
+				}
+			}
+			if (!ik) continue;
+			if (data[j][k].num) {
+				jk = true;
+				for (unsigned n = 0; n < data[j][k].num; n++) {
+					if (data[j][k].data[n]) time_jk++;
+				}
+			}
+			if (data[k][j].num) {
+				jk = true;
+				for (unsigned n = 0; n < data[k][j].num; n++) {
+					if (data[k][j].data[n]) time_jk++;
+				}
+			}
+			if (!jk) continue;
+			if (std::max(time_jk, time_ik) > 1) weight_map[i][j] += 1;
+		}
+	}
+}
+
+void Algorithms::special_calc0(network_data& data, double*const*const weight_map, unsigned i, unsigned j) {
+//	weight_map[i][j] = 0;
+	for (unsigned k = 0; k < data.num_of_people; k++) {
+		if (i != k && k != j) {
+			unsigned time_ik = 0;
+			unsigned time_jk = 0;
+			bool ik = false;
+			bool jk = false;
+			bool ki = false;
+			bool kj = false;
+			if (data[i][k].num) {
+				ik = true;
+				for (unsigned n = 0; n < data[i][k].num; n++) {
+					if (data[i][k].data[n]) time_ik++;
+				}
+			}
+			if (data[k][i].num) {
+				ki = true;
+				for (unsigned n = 0; n < data[k][i].num; n++) {
+					if (data[k][i].data[n]) time_ik++;
+				}
+			}
+			if (!ik&&!ki) continue;
+			if (data[j][k].num) {
+				jk = true;
+				for (unsigned n = 0; n < data[j][k].num; n++) {
+					if (data[j][k].data[n]) time_jk++;
+				}
+			}
+			if (data[k][j].num) {
+				kj = true;
+				for (unsigned n = 0; n < data[k][j].num; n++) {
+					if (data[k][j].data[n]) time_jk++;
+				}
+			}
+			if (!jk&&!kj) continue;
+			double inc = 1;
+			if (std::max(time_jk, time_ik) > 1) inc *= 8;
+			if (( jk&&kj ) && ( ik&&ki )) inc *= 1.5;
+			weight_map[i][j] += inc;
+		}
+	}
+}
+
+
 void Algorithms::multiply_four_sums(network_data& data, double*const*const weight_map, unsigned i, unsigned j) {
-	weight_map[i][j] = 0;
+//	weight_map[i][j] = 0;
 	for (unsigned k = 0; k < data.num_of_people; k++) {
 		if (j != k && k != i) {
 			//bottle_neck_2
@@ -37,7 +121,7 @@ void Algorithms::multiply_four_sums(network_data& data, double*const*const weigh
 }
 
 void Algorithms::multiply_four_nums(network_data& data, double*const*const weight_map, unsigned i, unsigned j) {
-	weight_map[i][j] = 0;
+//	weight_map[i][j] = 0;
 	for (unsigned k = 0; k < data.num_of_people; k++) {
 		if (j != k && k != i) {
 			//bottle_neck_3
@@ -49,7 +133,7 @@ void Algorithms::multiply_four_nums(network_data& data, double*const*const weigh
 }
 
 void Algorithms::add_four_sums(network_data& data, double*const*const weight_map, unsigned i, unsigned j) {
-	weight_map[i][j] = 0;
+//	weight_map[i][j] = 0;
 	for (unsigned k = 0; k < data.num_of_people; k++) {
 		if (j != k && k != i) {
 			weight_map[i][j] += (data[i][k].sum + data[k][i].sum + data[k][j].sum + data[j][k].sum);
@@ -59,7 +143,7 @@ void Algorithms::add_four_sums(network_data& data, double*const*const weight_map
 }
 
 void Algorithms::add_four_nums(network_data& data, double*const*const weight_map, unsigned i, unsigned j) {
-	weight_map[i][j] = 0;
+//	weight_map[i][j] = 0;
 	for (unsigned k = 0; k < data.num_of_people; k++) {
 		if (j != k && k != i) {
 			//bottle_neck_1
@@ -71,7 +155,7 @@ void Algorithms::add_four_nums(network_data& data, double*const*const weight_map
 }
 
 void Algorithms::multiply_two_sums(network_data& data, double*const*const weight_map, unsigned i, unsigned j) {
-	weight_map[i][j] = 0;
+//	weight_map[i][j] = 0;
 	for (unsigned k = 0; k < data.num_of_people; k++) {
 		if (j != k && k != i) {
 			//bottle_neck_0
@@ -84,7 +168,7 @@ void Algorithms::multiply_two_sums(network_data& data, double*const*const weight
 }
 
 void Algorithms::multiply_two_nums(network_data& data, double*const*const weight_map, unsigned i, unsigned j) {
-	weight_map[i][j] = 0;
+//	weight_map[i][j] = 0;
 	for (unsigned k = 0; k < data.num_of_people; k++) {
 		if (j != k && k != i) {
 			//bottle_neck_4
@@ -96,32 +180,44 @@ void Algorithms::multiply_two_nums(network_data& data, double*const*const weight
 	weight_map[i][j] /= 2;
 }
 
+
+
+
 vector<item> Algorithms::find_count_same_friends(network_data& data) {
-	return use_func_to_calc_and_sort(data, loop_no_direction, count_same_friends, gen_no_direction);
+	return use_func_to_calc_and_sort(data, calc_no_any_friend, loop_no_direction, count_same_friends_all, gen_no_direction);
+}
+
+
+std::vector<item> Algorithms::find_count_twice_nzero_friend(network_data & data) {
+	return use_func_to_calc_and_sort(data, calc_no_any_friend, loop_no_direction, count_same_friends_twice_nzero, gen_no_direction);
+}
+
+std::vector<item> Algorithms::find_special0(network_data & data) {
+	return use_func_to_calc_and_sort(data, calc_no_any_friend, loop_no_direction, special_calc0, gen_no_direction);
 }
 
 vector<item> Algorithms::find_multiply_four_sums(network_data& data) {
-	return use_func_to_calc_and_sort(data, loop_no_direction, multiply_four_sums, gen_no_direction);
+	return use_func_to_calc_and_sort(data, calc_no_any_friend,loop_no_direction, multiply_four_sums, gen_no_direction);
 }
 
 std::vector<item> Algorithms::find_multiply_four_nums(network_data & data) {
-	return use_func_to_calc_and_sort(data, loop_no_direction, multiply_four_nums, gen_no_direction);
+	return use_func_to_calc_and_sort(data, calc_no_any_friend, loop_no_direction, multiply_four_nums, gen_no_direction);
 }
 
 std::vector<item> Algorithms::find_add_four_sums(network_data & data) {
-	return use_func_to_calc_and_sort(data, loop_no_direction, add_four_sums, gen_no_direction);
+	return use_func_to_calc_and_sort(data, calc_no_any_friend, loop_no_direction, add_four_sums, gen_no_direction);
 }
 
 std::vector<item> Algorithms::find_add_four_nums(network_data & data) {
-	return use_func_to_calc_and_sort(data, loop_no_direction, add_four_nums, gen_no_direction);
+	return use_func_to_calc_and_sort(data, calc_no_any_friend, loop_no_direction, add_four_nums, gen_no_direction);
 }
 
 std::vector<item> Algorithms::find_multiply_two_sums(network_data & data) {
-	return use_func_to_calc_and_sort(data, loop_no_direction, multiply_two_sums, gen_no_direction);
+	return use_func_to_calc_and_sort(data, calc_no_any_friend, loop_no_direction, multiply_two_sums, gen_no_direction);
 }
 
 std::vector<item> Algorithms::find_multiply_two_nums(network_data & data) {
-	return use_func_to_calc_and_sort(data, loop_no_direction, multiply_two_nums, gen_no_direction);
+	return use_func_to_calc_and_sort(data, calc_no_any_friend, loop_no_direction, multiply_two_nums, gen_no_direction);
 }
 
 
@@ -177,15 +273,16 @@ std::vector<item> Algorithms::find_multiply_two_nums(network_data & data) {
 //Following are function apis to use as shared code
 std::vector<item> Algorithms::use_func_to_calc_and_sort(
 	network_data& data,
-	void(*calc_loop)(network_data&, double*const*const, void(*)( network_data&, double*const*const, unsigned, unsigned)),
-	void(*calc_func)(network_data&, double*const*const, unsigned, unsigned),
-	std::vector<item>(*gen_func)(network_data&, double*const*const )) {
+	calc_condition_t calc_condition,
+	calc_loop_t calc_loop,
+	calc_func_t calc_func,
+	gen_func_t gen_func) {
 	double** const weight_map = new double*[data.num_of_people];
-	double* const map = new double[data.num_of_people*data.num_of_people]{};
+	double* const map = new double[data.num_of_people*data.num_of_people]();
 	for (size_t i = 0; i < data.num_of_people; i++) {
 		weight_map[i] = map + data.num_of_people*i;
 	}
-	calc_loop(data, weight_map, calc_func);
+	calc_loop(data, weight_map, calc_func,calc_condition);
 	std::vector<item> rtn = gen_func(data, weight_map);
 	std::sort(rtn.begin(), rtn.end(), comp_weight);
 	delete[] weight_map;
@@ -196,10 +293,11 @@ std::vector<item> Algorithms::use_func_to_calc_and_sort(
 void Algorithms::loop_no_direction(
 	network_data& data, 
 	double*const*const weight_map,
-	void(*calc_func)( network_data&, double*const*const, unsigned, unsigned )) {
+	calc_func_t calc_func, 
+	calc_condition_t calc_condition) {
 	for (unsigned i = 0; i < data.num_of_people; i++) {
 		for (unsigned j = i + 1; j < data.num_of_people; j++) {
-			if (!data[i][j].num && !data[j][i].num) {
+			if (calc_condition(data,i,j)) {
 				calc_func(data, weight_map, i, j);
 			}
 		}
@@ -209,10 +307,11 @@ void Algorithms::loop_no_direction(
 void Algorithms::loop_all(
 	network_data& data,
 	double*const*const weight_map,
-	void(*calc_func)( network_data&, double*const*const, unsigned, unsigned )) {
+	calc_func_t calc_func,
+	calc_condition_t calc_condition) {
 	for (unsigned i = 0; i < data.num_of_people; i++) {
 		for (unsigned j = 0; j < data.num_of_people; j++) {
-			if (i!=j && !data[i][j].num) {
+			if (calc_condition(data, i, j)) {
 				calc_func(data, weight_map, i, j);
 			}
 		}
@@ -297,6 +396,148 @@ std::array<int, 12> Algorithms::find_clust_distrib(std::vector<clustering>& data
 }
 
 
+
+
+
+void Algorithms::count_same_friends_all(network_data& data, size_t*const*const num_map, unsigned i, unsigned j) {
+	num_map[i][j] = 0;
+	for (unsigned k = 0; k < data.num_of_people; k++) {
+		if (i != k && k != j
+			//This is evaluated as most time-consuming
+			//Likely reason: cache miss
+			&& ( data[i][k].num || data[k][i].num )
+			&& ( data[k][j].num || data[j][k].num ))
+			num_map[i][j]++;
+	}
+}
+
+void Algorithms::count_mutual_visit(network_data& data, size_t*const*const num_map, unsigned i, unsigned j) {
+	num_map[i][j] = 0;
+	for (unsigned k = 0; k < data.num_of_people; k++) {
+		if (i != k && k != j
+			//This is evaluated as most time-consuming
+			//Likely reason: cache miss
+			&& data[i][k].num && data[k][i].num
+			&& data[k][j].num && data[j][k].num)
+			num_map[i][j]++;
+	}
+}
+
+void Algorithms::count_same_friends_least_twice_nzero(network_data& data, size_t*const*const num_map, unsigned i, unsigned j) {
+	num_map[i][j] = 0;
+	for (unsigned k = 0; k < data.num_of_people; k++) {
+		if (i != k && k != j) {
+			unsigned time_ik = 0;
+			unsigned time_jk = 0;
+			bool ik = false;
+			bool jk = false;
+			if (data[i][k].num) {
+				ik = true;
+				for (unsigned n = 0; n < data[i][k].num; n++) {
+					if (data[i][k].data[n]) time_ik++;
+				}
+			}
+			if (data[k][i].num) {
+				ik = true;
+				for (unsigned n = 0; n < data[k][i].num; n++) {
+					if (data[k][i].data[n]) time_ik++;
+				}
+			}
+			if (!ik) continue;
+			if (data[j][k].num) {
+				jk = true;
+				for (unsigned n = 0; n < data[j][k].num; n++) {
+					if (data[j][k].data[n]) time_jk++;
+				}
+			}
+			if (data[k][j].num) {
+				jk = true;
+				for (unsigned n = 0; n < data[k][j].num; n++) {
+					if (data[k][j].data[n]) time_jk++;
+				}
+			}
+			if (!jk) continue;
+			if (std::max(time_jk, time_ik) > 1) num_map[i][j]++;
+		}
+	}
+}
+
+std::vector<unsigned> Algorithms::find_count_friends_all(network_data& data) {
+	return count_friends_host(data, count_same_friends_all);
+}
+
+std::vector<unsigned> Algorithms::find_count_mutual_visit(network_data & data) {
+	return count_friends_host(data, count_mutual_visit);
+}
+
+std::vector<unsigned> Algorithms::find_count_friends_least_twice_nzero(network_data& data) {
+	return count_friends_host(data, count_same_friends_least_twice_nzero);
+}
+
+std::vector<unsigned> Algorithms::count_friends_host(network_data & data, count_func_t count_func) {
+	size_t** const num_map = new size_t*[data.num_of_people];
+//	compiler may not work for this
+	size_t* const map = new size_t[data.num_of_people*data.num_of_people]{};
+	for (size_t i = 0; i < data.num_of_people; i++) {
+		num_map[i] = map + data.num_of_people*i;
+	}
+//	for (size_t i = 0; i < data.num_of_people; i++) {
+//		num_map[i] = new double[data.num_of_people];
+//	}
+//	loop_no_direction(data, num_map, count_func, calc_all);
+
+	for (unsigned i = 0; i < data.num_of_people; i++) {
+		for (unsigned j = i + 1; j < data.num_of_people; j++) {
+			count_func(data, num_map, i, j);
+		}
+	}
+	std::vector<unsigned> rtn;
+	size_t max_same = 0;
+	//scope for same_friends
+	{
+//		std::vector<std::vector<int>> same_friends = find_num_of_same_friend(data);
+		for (unsigned i = 0; i < data.num_of_people; i++) {
+			for (unsigned j = i + 1; j < data.num_of_people; j++) {
+				max_same = std::max(max_same, size_t(num_map[i][j]));
+			}
+		}
+		rtn.resize(size_t(max_same + 1) * 2);
+		for (unsigned i = 0; i < data.num_of_people; i++) {
+			for (unsigned j = i + 1; j < data.num_of_people; j++) {
+				rtn[size_t(num_map[i][j]) << 0x01]++;
+				if (data[i][j].num || data[j][i].num)
+					rtn[( size_t(num_map[i][j]) << 0x01 ) + 1]++;
+			}
+		}
+	}
+	/*
+	for (size_t i = 0; i < data.num_of_people; i++) {
+		delete[] num_map[i];
+	}
+	*/
+	delete[] num_map;
+	delete[] map;
+	return rtn;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //////////////////////////////////////////////////////////////////////////////////
 //Following code is used for calculating the same_friend-friend_probability list
 std::vector<std::vector<int>> Algorithms::find_num_of_same_friend(network_data& data) {
@@ -317,38 +558,4 @@ std::vector<std::vector<int>> Algorithms::find_num_of_same_friend(network_data& 
 	}
 	return rtn;
 }
-
-std::vector<unsigned> Algorithms::count_friends_and_trios(network_data& data) {
-	double** const weight_map = new double*[data.num_of_people];
-	double* const map = new double[data.num_of_people*data.num_of_people]{};
-	for (size_t i = 0; i < data.num_of_people; i++) {
-		weight_map[i] = map + data.num_of_people*i;
-	}
-	loop_no_direction(data, weight_map, count_same_friends);
-	std::vector<unsigned> rtn;
-	double max_same = 0;
-	//scope for same_friends
-	{
-//		std::vector<std::vector<int>> same_friends = find_num_of_same_friend(data);
-		for (unsigned i = 0; i < data.num_of_people; i++) {
-			for (unsigned j = i + 1; j < data.num_of_people; j++) {
-				max_same = std::max(max_same, weight_map[i][j]);
-			}
-		}
-		rtn.resize(size_t( max_same + 1 ) * 2);
-		for (unsigned i = 0; i < data.num_of_people; i++) {
-			for (unsigned j = i + 1; j < data.num_of_people; j++) {
-				rtn[2 * size_t(weight_map[i][j])]++;
-				if (data[i][j].num || data[j][i].num) rtn[2 * size_t(weight_map[i][j]) + 1]++;
-			}
-		}
-	}
-	delete[] weight_map;
-	delete[] map;
-	return rtn;
-}
-
-
-
-
 

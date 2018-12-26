@@ -10,14 +10,22 @@
 using namespace std;
 
 //functions are called from heavy task to light task
-constexpr std::array<vector<item>(*)( network_data& ), 7> calc_funcs{
+constexpr std::array<vector<item>(*)( network_data& ), 9> calc_funcs{
 	Algorithms::find_multiply_four_sums,
 	Algorithms::find_multiply_four_nums,
 	Algorithms::find_multiply_two_sums,
 	Algorithms::find_multiply_two_nums,
 	Algorithms::find_add_four_sums,
 	Algorithms::find_add_four_nums,
-	Algorithms::find_count_same_friends
+	Algorithms::find_count_same_friends,
+	Algorithms::find_count_twice_nzero_friend,
+	Algorithms::find_special0
+};
+
+constexpr std::array<vector<unsigned>(*)( network_data& data ), 3> stat_funcs{
+	Algorithms::find_count_friends_all,
+	Algorithms::find_count_friends_least_twice_nzero,
+	Algorithms::find_count_mutual_visit
 };
 
 void write_clustering(ostream& ost, size_t i, const std::vector<clustering>& val) {
@@ -67,6 +75,7 @@ std::vector<double> add_percentages(std::vector<std::vector<unsigned>>& data) {
 	for (size_t i = 0; i < overall_size; i++) {
 		size_t cur_size = ( data[i].size() >> 0x01 );
 		for (size_t j = 0; j < cur_size; j++) {
+			cout << data[i][j *2] << '\t' << data[i][( j *2 ) + 1] << endl;
 			same_friends[j] += data[i][j << 0x01];
 			is_friend[j] += data[i][( j << 0x01 ) + 1];
 		}
@@ -84,7 +93,8 @@ void write_fdist(std::ostream& ost, std::vector<double>& data) {
 	size_t size = data.size();
 	ost << std::setprecision(17);
 	for (size_t i = 0; i < data.size(); i++) {
-		ost << i << ":\t" << data[i]<<'\n';
+		ost << i << ":\t" 
+			<< data[i] <<'\n';
 	}
 	ost << std::endl;
 }
@@ -186,10 +196,68 @@ void write_item_vector(const std::string filename, const std::vector<item>& data
 	ofs.open(filename);
 	ofs << setprecision(17);
 	for (size_t i = 0; i < data.size(); i++) {
-		ofs << data[i].s_person << '\t' << data[i].d_person << '\n' << data[i].weight << '\n\n';
+		ofs << data[i].s_person << '\t' << data[i].d_person << '\n' << data[i].weight << "\n\n";
+	}
+	ofs << endl;
+	ofs.close();
+}
+
+
+template<typename type, size_t size>
+std::array<std::vector<type>, size> get_array_avf_results(std::array<std::vector<std::future<type>>,size>& source) {
+	std::array<type, size> rtn;
+	for (size_t i = 0; i < size; i++) {
+		rtn[i] = Thread_Manager::get_future_vector_reverse(source[i]);
+	}
+	return rtn;
+}
+
+
+std::vector<unsigned> sum_up_all_unsigned(const std::vector<std::vector<unsigned>>& data){
+	size_t max_size = 0;
+	for (size_t i = 0; i < data.size(); i++) {
+		max_size = std::max(max_size, data[i].size());
+	}
+	std::vector<unsigned> rtn(max_size);
+	for (size_t i = 0; i < data.size(); i++) {
+		for (int j = 0; j < data[i].size(); j++) {
+			rtn[j] += data[i][j];
+		}
+	}
+	return rtn;
+}
+
+void write_friend_dist(const std::vector<unsigned>& data, const std::string& filename) {
+	ofstream ofs;
+	ofs.open(filename);
+	ofs << "To other members:\n"
+		<< "Format:\n\n"
+		<< "  Number of same friends\n"
+		<< "  Total\t\t\tIs friend\n"
+		<< "  Percentage in given same friends\n"
+		<< "  Percentage of given number of same friend in given field\n"
+		<< " (e.g. (is-friend for 1 same friend)/(sum of all is-friend))\n\n\n"
+		<< std::setprecision(17);
+	const size_t size = data.size()>>0x01;
+	unsigned sum1 = 0;
+	unsigned sum2 = 0;
+	for (size_t i = 0; i < size; i++) {
+		sum1 += data[i << 0x01];
+		sum2 += data[( i << 0x01 ) + 1];
+	}
+	for (size_t i = 0; i < size; i++) {
+		ofs << i << '\n'
+			<< data[i << 0x01] << "\t\t\t" << data[( i << 0x01 ) + 1] << '\n'
+			<< double(data[( i << 0x01 ) + 1]) / data[i << 0x01] << '\n'
+			<< double(data[i << 0x01]) / sum1 <<'\t'<< double(data[( i << 0x01 ) + 1]) / sum2 << "\n\n";
 	}
 	ofs.close();
 }
+
+
+
+
+
 
 int main() {
 	//inputs and initializations
@@ -206,35 +274,87 @@ int main() {
 	//process data
 	time.reset();
 #endif
+
+	std::vector<std::future<void>> write_tasks;
+	write_tasks.reserve(3 + 2 * calc_funcs.size() + stat_funcs.size() + 1);
+	auto val_f = Thread_Manager::vector_async(data, Algorithms::find_clustering_coeff);
+	std::array<std::vector<std::future<std::vector<unsigned>>>, stat_funcs.size()> fdist_f_v;
+	for (size_t i = 0; i < stat_funcs.size(); i++) {
+		fdist_f_v[i]= Thread_Manager::vector_async(data, stat_funcs[i]);
+	}
+
 	std::array<std::vector<std::future<std::vector<item>>>, calc_funcs.size()> all_ans_vecs;
 	for (size_t i = 0; i < calc_funcs.size(); i++) {
-		all_ans_vecs[i] = 
+		all_ans_vecs[i] =
 			Thread_Manager::vector_async<network_data, std::vector<item>>
 			(data, calc_funcs[i]);
 	}
-	std::vector<std::future<std::vector<clustering>>> val_f = Thread_Manager::vector_async<network_data, std::vector<clustering>>(data, Algorithms::find_clustering_coeff);
-	std::vector<std::future<std::vector<unsigned>>> fdist_v_f = Thread_Manager::vector_async<network_data, std::vector<unsigned>>(data, Algorithms::count_friends_and_trios);
+	write_tasks.emplace_back(
+		std::async(std::launch::async | std::launch::deferred,
+				   IO_Manager::write_sorted_data<network_data>,
+				   ".txt", data, IO_Manager::write_network));
+	auto val = Thread_Manager::get_future_vector_reverse(val_f);
+	std::array<std::vector<std::vector<unsigned>>, stat_funcs.size()> fdist_v;
+	for (size_t i = 0; i < stat_funcs.size(); i++) {
+		fdist_v[i] =
+			Thread_Manager::get_future_vector_reverse(fdist_f_v[i]);
+	}
+	std::array<std::future<std::vector<unsigned>>, stat_funcs.size()> fdist_f;
+	for (size_t i = 0; i < stat_funcs.size(); i++) {
+		fdist_f[i] = std::async(std::launch::async | std::launch::deferred,
+								sum_up_all_unsigned,
+								std::ref(fdist_v[i])
+		);
+	}
+	auto cdist_v_f = Thread_Manager::vector_async(val, Algorithms::find_clust_distrib);
+	write_tasks.emplace_back(
+		std::async(std::launch::async | std::launch::deferred, 
+				   IO_Manager::write_sorted_data<std::vector<clustering>>, 
+				   ".clust", val, write_clustering));
 	std::array<std::vector<std::vector<item>>, calc_funcs.size()> ans_v_a;
 	for (size_t i = 0; i < calc_funcs.size(); i++) {
 		ans_v_a[i] =
-			Thread_Manager::get_future_vector_reverse<std::vector<item>>(all_ans_vecs[i]);
+			Thread_Manager::get_future_vector_reverse(all_ans_vecs[i]);
 	}
-	std::vector<std::vector<clustering>> val = Thread_Manager::get_future_vector_reverse<std::vector<clustering>>(val_f);
-	std::vector<std::vector<unsigned>> fdist_v = Thread_Manager::get_future_vector_reverse<std::vector<unsigned>>(fdist_v_f);
-	std::vector<std::future<std::array<int, 12>>> cdist_v_f = Thread_Manager::vector_async<std::vector<clustering>, std::array<int, 12>>(val, Algorithms::find_clust_distrib);
-	std::array<std::future<std::vector<item>>, calc_funcs.size()> ans_f_a = 
-		Thread_Manager::array_async<
-			std::vector<std::vector<item>>,
-			std::vector<item>,
-			calc_funcs.size()>
-		(ans_v_a, sort_all_item);
-	std::vector<double> fdist_all = add_percentages(fdist_v);
-	std::vector<std::array<int, 12>> cdist_v = Thread_Manager::get_future_vector<std::array<int, 12>>(cdist_v_f);
-	std::array<int, 12> all_cdist = add_up(cdist_v);
-	std::array<std::vector<item>, calc_funcs.size()> ans_v=
-		Thread_Manager::get_future_array_reverse<std::vector<item>,calc_funcs.size()>(ans_f_a);
+	auto ans_f_a = Thread_Manager::array_async(ans_v_a, sort_all_item);
+	auto cdist_v = Thread_Manager::get_future_vector_reverse(cdist_v_f);
+	write_tasks.emplace_back(
+		std::async(std::launch::async | std::launch::deferred,
+				   IO_Manager::write_sorted_data<std::array<int, 12>>,
+				   ".cdist", cdist_v, write_clustering_dist));
+	auto all_cdist = add_up(cdist_v);
+	ofstream ofs1;
+	ofs1.open("all.cdist");
+	write_tasks.emplace_back(
+		std::async(std::launch::async | std::launch::deferred, 
+				   write_clustering_dist, 
+				   std::ref(ofs1), 0, all_cdist));
+	auto fdist = Thread_Manager::get_future_array_reverse(fdist_f);
+	for (size_t i = 0; i < stat_funcs.size(); i++) {
+		ostringstream oss;
+		oss << "fdist" << i << ".txt";
+		write_tasks.emplace_back(
+			std::async(std::launch::async | std::launch::deferred,
+					   write_friend_dist,
+					   std::ref(fdist[i]), oss.str()));
+	}
 	std::vector<item> ans_all;
 	ans_all.reserve(10000 + calc_funcs.size() - 2);
+	auto ans_v = Thread_Manager::get_future_array_reverse(ans_f_a);
+	for (size_t i = 0; i < calc_funcs.size(); i++) {
+		ostringstream oss;
+		oss << "ans" << i << ".txt";
+		write_tasks.emplace_back(
+			std::async(std::launch::async | std::launch::deferred,
+					   write_ans,
+					   oss.str(), std::ref(ans_v[i])));
+		oss.str("");
+		oss << "ans" << i << "_s.txt";
+		write_tasks.emplace_back(
+			std::async(std::launch::async | std::launch::deferred,
+					   write_item_vector, 
+					   oss.str(), std::ref(ans_v[i])));
+	}
 	ans_all = merge_different(ans_v[0], ans_v[1]);
 	for (size_t i = 0; ans_all.size() < 10000;  i++) {
 		for (size_t j = 2; j < calc_funcs.size(); j++) {
@@ -243,47 +363,13 @@ int main() {
 			}
 		}
 	}
-#ifdef DEBUG
-	cout << "Time used processing data:\t" << time.elapsed() << endl;
-#endif
-	//outputs
-	{
-#ifdef DEBUG
-		time.reset();
-#endif
-		std::vector<std::future<void>> write_tasks;
-		write_tasks.reserve(3 + 2 * calc_funcs.size() + 1);
-		write_tasks.emplace_back(std::async(std::launch::async | std::launch::deferred, IO_Manager::write_sorted_data<network_data>, ".txt", data, IO_Manager::write_network));
-		write_tasks.emplace_back(std::async(std::launch::async | std::launch::deferred, IO_Manager::write_sorted_data<std::vector<clustering>>, ".clust", val, write_clustering));
-		write_tasks.emplace_back(std::async(std::launch::async | std::launch::deferred, IO_Manager::write_sorted_data<std::array<int, 12>>, ".cdist", cdist_v, write_clustering_dist));
-		ofstream ofs1;
-		ofs1.open("all.cdist");
-		write_tasks.emplace_back(std::async(std::launch::async | std::launch::deferred, write_clustering_dist, std::ref(ofs1), 0, all_cdist));
-		ofstream ofs2;
-		ofs2.open("fdist_all.txt");
-		write_tasks.emplace_back(std::async(std::launch::async | std::launch::deferred, write_fdist, std::ref(ofs2), std::ref(fdist_all)));
-		for (size_t i = 0; i < calc_funcs.size(); i++) {
-			ostringstream oss("ans");
-			oss << i << ".txt";
-			const string s1 = oss.str();
-			write_tasks.emplace_back(std::async(std::launch::async | std::launch::deferred, write_ans, s1, std::ref(ans_v[i])));
-			oss.str("ans");
-			oss << i << "_s.txt";
-			const string s2 = oss.str();
-			write_tasks.emplace_back(std::async(std::launch::async | std::launch::deferred, write_item_vector, s2, std::ref(ans_v[i])));
-		}
-		write_tasks.emplace_back(std::async(std::launch::async | std::launch::deferred, write_ans, "all_ans.txt", ans_all));
-		for (size_t i = 0; i < write_tasks.size(); i++) {
-			write_tasks[i].wait();
-		}
-		ofs1.close();
-		ofs2.close();
-#ifdef DEBUG
-		cout << "Time used writing output:\t" << time.elapsed() << endl;
-#endif
+	write_tasks.emplace_back(
+		std::async(std::launch::async | std::launch::deferred,
+				   write_ans, "all_ans.txt", ans_all));
+	for (size_t i = 0; i < write_tasks.size(); i++) {
+		write_tasks[i].wait();
 	}
-#ifdef DEBUG
-	system("pause");
-#endif
+	ofs1.close();
+//	system("pause");
 	return 0;
 }
