@@ -7,14 +7,16 @@ namespace IO_Manager {
 //		Timer<normal> time{};
 		std::ifstream ifs;
 		ifs.open(file);
+#ifdef DEBUG
 		if (!ifs) {
 			std::cout << "Failed to read from input file!" << std::endl;
 			return std::vector<network_data>();
 		}
+#endif
 		ifs.seekg(0, std::ios::end);
 		const std::streamoff size = ifs.tellg();
 		std::string str;
-		str.resize(size);
+		str.resize(size_t(size));
 		ifs.seekg(0);
 		ifs.read(&str[0], size);
 		ifs.close();
@@ -54,22 +56,24 @@ namespace IO_Manager {
 				if (num_exists[i]) {
 					rtn.index[i] = rtn.num_of_people;
 					rtn.num_of_people++;
-				}
-				else {
+				} else {
 					rtn.index[i] = -1;
 				}
 			}
 //			std::cout << "Time used associating people with indexes:\t" << time.elapsed() << std::endl;
 //			time.reset();
+#ifdef DEBUG
 			try {
+#endif
 				rtn.map = new list[rtn.num_of_people * rtn.num_of_people]{};
 				rtn.people = new int[rtn.num_of_people];
-			}
-			catch (std::bad_alloc& ba) {
+#ifdef DEBUG
+			} catch (std::bad_alloc& ba) {
 				std::cerr << ba.what() << std::endl;
 				network_data::destroy(rtn);
 				throw std::runtime_error("Error allocating whole matrix for reading all data.");
 			}
+#endif
 //			std::cout << "Time used allocating map:\t\t\t" << time.elapsed() << std::endl;
 //			time.reset();
 			rtn.num_of_people = 0;
@@ -93,7 +97,9 @@ namespace IO_Manager {
 //		std::cout << "Time counting sum and num for each edge:\t" << time.elapsed() << std::endl;
 //		time.reset();
 		iss.seekg(0);
+#ifdef DEBUG
 		try {
+#endif
 			for (unsigned i = 0; i < rtn.num_of_people; i++) {
 				for (unsigned j = 0; j < rtn.num_of_people; j++) {
 					if (rtn[i][j].num) {
@@ -102,11 +108,13 @@ namespace IO_Manager {
 					}
 				}
 			}
+#ifdef DEBUG
 		} catch (std::bad_alloc& ba) {
 			std::cerr << ba.what() << std::endl;
 			network_data::destroy(rtn);
 			throw std::runtime_error("Error allocating while reading each edge.");
 		}
+#endif
 //		std::cout << "Time allocating for list arrays:\t\t" << time.elapsed() << std::endl;
 //		time.reset();
 		while (iss.good()) {
@@ -135,8 +143,47 @@ namespace IO_Manager {
 //		time.reset();
 //		const std::vector<network_data>& val = Algorithms::separate_sets(rtn);
 //		network_data::destroy(rtn);
+		std::ofstream ofs;
+		ofs.open("all_network.txt");
+		write_network(ofs, 0, rtn);
+		ofs.close();
 		const std::vector<network_data>& val = Algorithms::separate_sets_move(rtn);
 //		std::cout << "Time separating subsets:\t\t\t" << time.elapsed() << std::endl << std::endl;
 		return val;
 	}
+
+
+
+
+
+	void write_network(std::ostream& ost, size_t index, const network_data& data) {
+		for (unsigned i = 0; i < data.num_of_people; i++) {
+			for (unsigned j = 0; j < data.num_of_people; j++) {
+				if (data[i][j].num) {
+					ost << data.people[i] << '\t' << data.people[j] << '\n';
+					ost << data[i][j].num << '\t' << data[i][j].sum << '\n';
+					for (unsigned k = 0; k < data[i][j].num; k++) {
+						ost << data[i][j].data[k] << '\t';
+					}
+					ost << "\n\n";
+				}
+			}
+		}
+	}
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

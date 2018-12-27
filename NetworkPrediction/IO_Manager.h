@@ -18,13 +18,19 @@ namespace IO_Manager {
 			oss << i;
 			std::ofstream ofs;
 			ofs.open(oss.str() + extension);
+#ifdef DEBUG
 			if (!ofs) {
 				std::cout << "Cannot open file for output!" << std::endl;
 			}
 			else {
+#endif
 				writer_func(ofs, i, data[i]);
+#ifdef DEBUG
 			}
+#endif
 			ofs.close();
 		}
 	}
+
+	void write_network(std::ostream& ost, size_t index, const network_data& data);
 }

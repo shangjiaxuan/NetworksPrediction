@@ -34,7 +34,6 @@ void list::copy(const list& source, list& dest) {
 	destroy(dest);
 	dest.sum = source.sum;
 	dest.num = source.num;
-	dest.same_friend = source.same_friend;
 	if(dest.num) {
 		dest.data = new unsigned[dest.num];
 		for(unsigned i = 0; i < dest.num; i++) {
@@ -51,7 +50,6 @@ void list::move(list& source, list& dest) noexcept {
 	dest.sum = source.sum;
 	dest.num = source.num;
 	dest.data = source.data;
-	dest.same_friend = source.same_friend;
 	source.data = nullptr;
 }
 

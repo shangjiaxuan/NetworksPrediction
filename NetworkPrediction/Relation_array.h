@@ -5,6 +5,6 @@ struct item {
 	int s_person = -1;
 	int d_person = -1;
 	double weight;
-	list* contact_list;
+	::list* contact_list;
 };
 

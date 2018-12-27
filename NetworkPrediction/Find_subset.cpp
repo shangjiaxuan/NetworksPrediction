@@ -1,6 +1,7 @@
 #include "Algorithms.h"
 #include "ThreadManager.h"
 #include "IO_Manager.h"
+#include "network_data.h"
 
 //#include "Utilities.h"
 
@@ -68,9 +69,9 @@ vector<network_data> Algorithms::separate_sets_move(network_data& source) {
 		passed.push_back({ found, source,i + 1 });
 	}
 //	std::cout << "Time preparing for parsing passed val:\t" << time.elapsed() << std::endl;
-	vector<network_data> rtn = Thread_Manager<set_info, network_data>::vector_thread(passed, find_one_subset_move);
+	vector<network_data> rtn = Thread_Manager::vector_thread<set_info,network_data>(passed, find_one_subset_move);
 	network_data::destroy(source);
-	std::sort(rtn.begin(), rtn.end(), comp_rel_num);
+	std::sort(rtn.rbegin(), rtn.rend(), comp_num_of_people);
 	return rtn;
 }
 
@@ -88,7 +89,7 @@ network_data Algorithms::find_one_subset_move(set_info& info) {
 //	time.reset();
 	rtn.index = new unsigned[rtn.max_index + 1];
 	rtn.people = new int[rtn.num_of_people];
-	rtn.map = new list[rtn.num_of_people * rtn.num_of_people]{};
+	rtn.map = new ::list[rtn.num_of_people * rtn.num_of_people]{};
 //	cout << "Time used allocating memory:\t" << time.elapsed() << endl;
 //	time.reset();
 	int i_rtn = 0;
